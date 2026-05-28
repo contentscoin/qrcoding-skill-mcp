@@ -34,16 +34,25 @@ describe("qrcoding skill mcp gateway", () => {
     expect(JSON.parse(String(index.body))).toMatchObject({
       skills: [
         expect.objectContaining({
-          name: "qrcoding",
+          name: "qrcoding-campaign-operator",
           type: "skill-md",
-          url: "https://skill.example/.well-known/agent-skills/qrcoding/SKILL.md"
+          url: "https://skill.example/.well-known/agent-skills/qrcoding-campaign-operator/SKILL.md"
+        }),
+        expect.objectContaining({
+          name: "qrcoding-integration-architect",
+          type: "skill-md",
+          url: "https://skill.example/.well-known/agent-skills/qrcoding-integration-architect/SKILL.md"
         })
       ]
     });
 
-    const skill = await handleRequest(request("/.well-known/agent-skills/qrcoding/SKILL.md"));
+    const skill = await handleRequest(request("/.well-known/agent-skills/qrcoding-campaign-operator/SKILL.md"));
     expect(String(skill.body)).toContain("x-api-key: <api-key>");
     expect(String(skill.body)).toContain("POST https://skill.example/mcp");
+
+    const legacy = await handleRequest(request("/.well-known/agent-skills/qrcoding/SKILL.md"));
+    expect(legacy.statusCode).toBe(200);
+    expect(String(legacy.body)).toContain("qrcoding-campaign-operator");
   });
 
   it("proxies MCP requests with API key headers", async () => {

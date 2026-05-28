@@ -5,6 +5,8 @@
   "type": "module",
   "scripts": {
     "build": "tsc --noEmit",
+    "install:skills": "node scripts/install.mjs",
+    "mcp": "node mcp/qrcoding_mcp.mjs",
     "test": "vitest run",
     "start": "node --import tsx api/index.ts"
   },

@@ -1,0 +1,7 @@
+interface:
+  display_name: "QR Coding Integration Architect"
+  short_description: "QR Agent Studio API, MCP, Plugin 연동 설계"
+  default_prompt: "Use $qrcoding-integration-architect to design a QR Agent Studio API key, MCP, and OpenAPI plugin integration plan."
+
+policy:
+  allow_implicit_invocation: true

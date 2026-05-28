@@ -1,9 +1,22 @@
 import { createHash } from "node:crypto";
 
-export function skillMarkdown(publicBaseUrl: string, qrcodingBaseUrl: string): string {
+export type SkillArtifact = {
+  name: string;
+  description: string;
+  markdown: string;
+};
+
+function campaignOperatorMarkdown(publicBaseUrl: string, qrcodingBaseUrl: string): string {
   const publicBase = publicBaseUrl.replace(/\/$/, "");
   const targetBase = qrcodingBaseUrl.replace(/\/$/, "");
-  return `# qrcoding
+  return `---
+name: qrcoding-campaign-operator
+description: QR Agent Studio QR 생성, 조회, 렌더, 검증, 동적 목적지 변경을 API key와 MCP로 직접 처리하는 운영형 스킬.
+disable-model-invocation: false
+allowed-tools: "Read, Grep, Bash(test *), Bash(curl *)"
+---
+
+# QR Coding Campaign Operator
 
 Use this skill to create, render, validate, list, and update QR Agent Studio QR codes from agents, plugins, and automations.
 
@@ -62,6 +75,92 @@ content-type: application/json
 
 The response includes \`apiKey\` once. Store it in the plugin or agent secret store before using this skill.
 `;
+}
+
+function integrationArchitectMarkdown(publicBaseUrl: string, qrcodingBaseUrl: string): string {
+  const publicBase = publicBaseUrl.replace(/\/$/, "");
+  const targetBase = qrcodingBaseUrl.replace(/\/$/, "");
+  return `---
+name: qrcoding-integration-architect
+description: QR Agent Studio API, MCP, Agent Skill, OpenAPI plugin 연동을 설계하고 구현 계획을 작성하는 개발/설계형 스킬.
+disable-model-invocation: false
+allowed-tools: "Read, Grep, Bash(test *), Bash(curl *)"
+---
+
+# QR Coding Integration Architect
+
+Use this skill to design QR Agent Studio integrations for APIs, MCP clients, Agent Skills, and OpenAPI plugins. Default to API key auth; use OAuth only for clients that specifically require account linking.
+
+## Discovery
+
+- MCP endpoint: \`${publicBase}/mcp\`
+- MCP server card: \`${publicBase}/.well-known/mcp/server-card.json\`
+- Agent Skills index: \`${publicBase}/.well-known/agent-skills/index.json\`
+- OpenAPI: \`${publicBase}/openapi.json\`
+- Upstream QR Agent Studio: \`${targetBase}\`
+
+## Architecture Rules
+
+- Store QR Agent Studio API keys as secrets or environment variables.
+- Send API keys as \`x-api-key\`.
+- Do not hardcode API keys in browser clients.
+- Mask values that begin with \`qras_\` in logs and output.
+- Treat \`update_qr_destination\` as a state-changing operation.
+- Prefer SVG for QR assets that will be placed into generated images or print artwork.
+
+## Planning Flow
+
+Start each planning response with:
+
+\`\`\`text
+현재 단계: 분석 | 질문 | 설계 | 승인대기 | 구현
+\`\`\`
+
+Do not implement until the user approves a concrete plan in a later turn. Build the plan around:
+
+1. Client type: MCP, OpenAPI plugin, local script, dashboard, or automation.
+2. Auth: API key storage, scopes, revoke path, and log masking.
+3. Data flow: QR create/list/render/validate/update destination.
+4. Failure handling: invalid key, plan limit, missing QR id, network failure.
+5. Verification: \`tools/list\`, \`get_account_status\`, and one read-only QR request.
+
+## Useful Config
+
+\`\`\`json
+{
+  "mcpServers": {
+    "qrcoding": {
+      "type": "streamable-http",
+      "url": "${publicBase}/mcp",
+      "headers": {
+        "x-api-key": "qras_your_api_key"
+      }
+    }
+  }
+}
+\`\`\`
+`;
+}
+
+export function skillArtifacts(publicBaseUrl: string, qrcodingBaseUrl: string): SkillArtifact[] {
+  return [
+    {
+      name: "qrcoding-campaign-operator",
+      description: "Operate QR Agent Studio campaigns over MCP with an API key.",
+      markdown: campaignOperatorMarkdown(publicBaseUrl, qrcodingBaseUrl)
+    },
+    {
+      name: "qrcoding-integration-architect",
+      description: "Design QR Agent Studio API, MCP, Agent Skill, and OpenAPI plugin integrations.",
+      markdown: integrationArchitectMarkdown(publicBaseUrl, qrcodingBaseUrl)
+    }
+  ];
+}
+
+export function skillMarkdown(publicBaseUrl: string, qrcodingBaseUrl: string, name = "qrcoding-campaign-operator"): string {
+  const artifacts = skillArtifacts(publicBaseUrl, qrcodingBaseUrl);
+  const artifact = artifacts.find((item) => item.name === name) ?? artifacts[0];
+  return artifact.markdown;
 }
 
 export function digestSkill(markdown: string): string {

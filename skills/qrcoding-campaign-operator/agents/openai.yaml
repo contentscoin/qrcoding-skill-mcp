@@ -1,0 +1,7 @@
+interface:
+  display_name: "QR Coding Campaign Operator"
+  short_description: "QR Agent Studio QR 캠페인을 API key와 MCP로 운영"
+  default_prompt: "Use $qrcoding-campaign-operator to create a dynamic QR code, render it, and summarize the dynamic URL."
+
+policy:
+  allow_implicit_invocation: true

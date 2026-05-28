@@ -1,69 +1,167 @@
-# qrcoding Skill MCP
+# qrcoding 스킬과 MCP
 
-Standalone Skill/MCP gateway for QR Agent Studio.
+Codex, Claude Code, OpenAPI plugin, MCP client에서 QR Agent Studio를 쉽게 쓰기 위한 Agent Skills와 MCP 서버입니다.
 
-This repo contains only the agent-facing pieces:
+이 저장소를 설치하면 에이전트가 QR 코드를 생성, 조회, 렌더링, 검증하거나 동적 QR 목적지를 변경할 때 필요한 절차와 reference를 바로 사용할 수 있습니다.
 
-- MCP Streamable HTTP gateway at `/mcp`
-- MCP Server Card at `/.well-known/mcp/server-card.json`
-- Agent Skills discovery at `/.well-known/agent-skills/index.json`
-- `SKILL.md` artifact at `/.well-known/agent-skills/qrcoding/SKILL.md`
-- REST/OpenAPI proxy at `/openapi.json` and `/v1/*`
+## 설치 전 준비
 
-It does not store QR records. It forwards authenticated requests to QR Agent Studio.
+설치에는 Node.js 18 이상이 필요합니다.
 
-## Authentication
-
-Use a QR Agent Studio API key:
+QR Agent Studio API key도 준비해 주세요. 키는 QR Agent Studio 대시보드의 **Skills & MCP** 패널에서 발급합니다.
 
 ```text
-x-api-key: qras_your_key
+Dashboard > Skills & MCP > Create API key
 ```
 
-You can create a key from QR Agent Studio:
+API key는 `qras_`로 시작합니다.
+
+## 설치하기
+
+아래 명령어를 터미널에 붙여 넣으면 설치가 진행됩니다.
 
 ```bash
-curl -X POST https://qrcoding-7l4aqfjr0-jakes-projects-0ab50f91.vercel.app/v1/api-keys \
-  -H "content-type: application/json" \
-  -d '{"name":"Plugin key"}'
+curl -fsSL https://raw.githubusercontent.com/contentscoin/qrcoding-skill-mcp/main/install.sh | bash
 ```
 
-The full key is returned once as `apiKey`. Store it in your skill, plugin, or agent secret store.
-
-## MCP
+자주 쓰는 설치 예:
 
 ```bash
-curl -X POST https://your-skill-mcp.example/mcp \
+# 현재 프로젝트에 전체 스킬 설치
+curl -fsSL https://raw.githubusercontent.com/contentscoin/qrcoding-skill-mcp/main/install.sh | bash -s -- --project --mode=full
+
+# Codex 전역에 운영용 스킬 설치
+curl -fsSL https://raw.githubusercontent.com/contentscoin/qrcoding-skill-mcp/main/install.sh | bash -s -- --codex --mode=ops
+
+# Claude Code 전역에 개발/설계용 스킬 설치
+curl -fsSL https://raw.githubusercontent.com/contentscoin/qrcoding-skill-mcp/main/install.sh | bash -s -- --claude --mode=dev
+```
+
+## 설치 구성
+
+| 구성 | 설치 내용 | 추천 상황 |
+|---|---|---|
+| 개발용 | `qrcoding-integration-architect` | API key, MCP, OpenAPI plugin, Agent Skill 연동 설계 |
+| 운영용 | `qrcoding-campaign-operator` | QR 생성, 조회, 렌더, 검증, 목적지 변경 |
+| 전체 | 두 스킬 모두 | 개발과 운영을 모두 사용할 때 |
+
+## 설치 대상
+
+| 대상 | 설명 |
+|---|---|
+| 현재 프로젝트 | 현재 프로젝트의 `.agents/skills`에 설치 |
+| Codex | Codex 기본 스킬 경로에 설치 |
+| Claude Code | Claude Code 기본 스킬 경로에 설치 |
+| Codex + Claude Code | 양쪽에 모두 설치 |
+| 직접 경로 입력 | 원하는 스킬 설치 경로를 직접 입력 |
+
+## 제공 스킬
+
+| 스킬 | 용도 |
+|---|---|
+| `qrcoding-campaign-operator` | QR Agent Studio QR 생성, 조회, 렌더, 검증, 동적 목적지 변경을 API key와 MCP로 직접 처리합니다. |
+| `qrcoding-integration-architect` | QR Agent Studio API, MCP, Agent Skill, OpenAPI plugin 연동을 설계하고 구현 계획을 작성합니다. |
+
+## API key 바꾸기
+
+설치 후 API key를 바꾸려면 셸 설정 파일의 `QRCODING_API_KEY` 값을 수정합니다.
+
+```bash
+export QRCODING_API_KEY="qras_your_key"
+export QRCODING_MCP_URL="https://qrcoding-skill-mcp.vercel.app/mcp"
+```
+
+수정한 뒤 새 터미널을 열거나 아래 명령어로 현재 터미널에 반영합니다.
+
+```bash
+source ~/.zshrc
+```
+
+bash를 사용한다면:
+
+```bash
+source ~/.bashrc
+```
+
+## MCP로 사용하기
+
+MCP 서버는 위 스킬의 도구 실행 버전입니다. 에이전트가 QR Agent Studio 도구를 직접 호출하고, API reference 섹션도 도구로 확인할 수 있습니다.
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/contentscoin/qrcoding-skill-mcp/main/install-mcp.sh | bash
+```
+
+MCP 서버도 `QRCODING_API_KEY` 환경변수를 사용합니다.
+
+대표 도구는 다음과 같습니다.
+
+| 도구 | 설명 |
+|---|---|
+| `list_qr_codes` | QR 목록 조회 |
+| `create_qr_code` | QR 생성 |
+| `render_qr_code` | QR SVG/PNG/PDF 렌더 |
+| `update_qr_destination` | 동적 QR 목적지 변경 |
+| `validate_qr_scanability` | 스캔 가능성 검증 |
+| `get_qr_analytics` | QR 스캔 분석 조회 |
+| `get_account_status` | 계정/플랜/한도 확인 |
+| `qrcoding_get_reference_section` | API/MCP reference 섹션 확인 |
+
+## Hosted Gateway
+
+웹 discovery와 Streamable HTTP MCP는 아래에서 제공됩니다.
+
+| 문서 | URL |
+|---|---|
+| MCP Endpoint | `https://qrcoding-skill-mcp.vercel.app/mcp` |
+| MCP Server Card | `https://qrcoding-skill-mcp.vercel.app/.well-known/mcp/server-card.json` |
+| Agent Skills Index | `https://qrcoding-skill-mcp.vercel.app/.well-known/agent-skills/index.json` |
+| OpenAPI | `https://qrcoding-skill-mcp.vercel.app/openapi.json` |
+
+Streamable HTTP MCP 예:
+
+```bash
+curl -sS -X POST https://qrcoding-skill-mcp.vercel.app/mcp \
   -H "content-type: application/json" \
   -H "accept: application/json, text/event-stream" \
-  -H "x-api-key: qras_your_key" \
+  -H "x-api-key: $QRCODING_API_KEY" \
   -d '{"jsonrpc":"2.0","id":1,"method":"tools/list"}'
 ```
 
-## Configuration
+## 수동 설치
 
-Set `QRCODING_BASE_URL` to the QR Agent Studio deployment this gateway should forward to.
+자동 설치가 어렵다면 저장소를 받은 뒤 직접 복사할 수 있습니다.
+
+Codex:
 
 ```bash
-QRCODING_BASE_URL=https://qrcoding.example.com
-PUBLIC_BASE_URL=https://your-skill-mcp.example
+mkdir -p ~/.agents/skills
+cp -R skills/* ~/.agents/skills/
 ```
 
-If unset, the gateway points at the current qrcoding preview deployment used during setup.
+Claude Code:
 
-## Local Development
+```bash
+mkdir -p ~/.claude/skills
+cp -R skills/* ~/.claude/skills/
+```
+
+MCP 서버 파일은 `mcp/qrcoding_mcp.mjs`입니다.
+
+## 개발
 
 ```bash
 npm install
 npm test
 npm run build
-vercel dev
 ```
 
-## Deploy
+## 배포
+
+Hosted gateway는 Vercel로 배포합니다.
 
 ```bash
 vercel deploy -y
+vercel deploy --prod -y
 ```
 
-Use the resulting URL as the MCP endpoint and as the Agent Skills discovery origin.
+`QRCODING_BASE_URL`로 gateway가 프록시할 QR Agent Studio origin을 지정할 수 있습니다.

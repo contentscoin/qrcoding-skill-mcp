@@ -1,6 +1,6 @@
 import type { IncomingHttpHeaders, IncomingMessage, ServerResponse } from "node:http";
 import { getQrcodingBaseUrl } from "./config.js";
-import { digestSkill, skillMarkdown } from "./skill.js";
+import { digestSkill, skillArtifacts, skillMarkdown } from "./skill.js";
 
 type RouteResponse = {
   statusCode: number;
@@ -123,18 +123,16 @@ function mcpServerCard(request: RequestLike): RouteResponse {
 
 function agentSkillsIndex(request: RequestLike): RouteResponse {
   const publicBaseUrl = getPublicBaseUrl(request);
-  const markdown = skillMarkdown(publicBaseUrl, getQrcodingBaseUrl());
+  const artifacts = skillArtifacts(publicBaseUrl, getQrcodingBaseUrl());
   return json(200, {
     $schema: "https://schemas.agentskills.io/discovery/0.2.0/schema.json",
-    skills: [
-      {
-        name: "qrcoding",
-        type: "skill-md",
-        description: "Use QR Agent Studio over MCP with an API key.",
-        url: `${publicBaseUrl}/.well-known/agent-skills/qrcoding/SKILL.md`,
-        digest: digestSkill(markdown)
-      }
-    ]
+    skills: artifacts.map((artifact) => ({
+      name: artifact.name,
+      type: "skill-md",
+      description: artifact.description,
+      url: `${publicBaseUrl}/.well-known/agent-skills/${artifact.name}/SKILL.md`,
+      digest: digestSkill(artifact.markdown)
+    }))
   });
 }
 
@@ -171,8 +169,14 @@ export async function handleRequest(request: RequestLike): Promise<RouteResponse
   if (path === "/openapi.json") return openApi(request);
   if (path === "/.well-known/mcp/server-card.json") return mcpServerCard(request);
   if (path === "/.well-known/agent-skills/index.json") return agentSkillsIndex(request);
-  if (path === "/.well-known/agent-skills/qrcoding/SKILL.md") {
-    return text(200, skillMarkdown(getPublicBaseUrl(request), getQrcodingBaseUrl()), "text/markdown; charset=utf-8");
+  if (path.startsWith("/.well-known/agent-skills/") && path.endsWith("/SKILL.md")) {
+    const name = decodeURIComponent(path.split("/").at(-2) ?? "");
+    const artifactName = name === "qrcoding" ? "qrcoding-campaign-operator" : name;
+    const artifacts = skillArtifacts(getPublicBaseUrl(request), getQrcodingBaseUrl());
+    if (!artifacts.some((artifact) => artifact.name === artifactName)) {
+      return json(404, { code: "not_found", message: "Skill not found." });
+    }
+    return text(200, skillMarkdown(getPublicBaseUrl(request), getQrcodingBaseUrl(), artifactName), "text/markdown; charset=utf-8");
   }
   if (path.startsWith("/v1/")) return proxy(request, `${path}${parsed.search}`);
   return json(404, { code: "not_found", message: "Route not found." });
