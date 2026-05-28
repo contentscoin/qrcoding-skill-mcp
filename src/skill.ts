@@ -184,13 +184,12 @@ The \`CONTROL_PLANE_API_KEY\` principal needs Tunnels Read + Use for the target 
 
 The hosted gateway remains available at \`${publicBase}/mcp\` for server cards, discovery, and legacy/dev clients. For ChatGPT + Codex, prefer the private proxy behind the tunnel.
 
-## ChatGPT Tunnel Setup Flow
+## ChatGPT App Setup Flow
 
-1. 2-1 Open ChatGPT web: https://chatgpt.com/. Done when the correct workspace/account is visible.
-2. 2-2 Enable app creation: copy Workspace Settings -> Permissions & Roles -> Connected Data -> enable Developer mode / Create custom MCP connectors. Done when developer/custom MCP connector creation is enabled.
-3. 2-3 Create the QR app: copy Workspace Settings -> Apps -> Create -> Connection: Tunnel -> Scan Tools. Done when the app creation screen has Connection: Tunnel.
-4. 2-4 Connect the tunnel: open https://chatgpt.com/#settings/Connectors, select or paste the tunnel_id, run Scan Tools, and save the discovered QR tools.
-5. 2-5 Start the private proxy side: copy the dashboard tunnel guide and replace placeholders only on the private proxy machine. Done when tunnel-client run stays active.
+1. 2-1 Turn on developer mode: open https://chatgpt.com/, confirm the correct workspace, then enable Developer mode or custom MCP connector creation in ChatGPT settings. Done when the workspace can create custom MCP apps.
+2. 2-2 Create the app: after developer mode is on, open Apps or Workspace Apps in ChatGPT and create a QR Agent Studio app. Done when the app creation screen lets you enter the app name and description.
+3. 2-3 Set API and tunnel: do not paste a qras_ key into ChatGPT. In the app setup or connector settings at https://chatgpt.com/#settings/Connectors, choose Connection: Tunnel, select or paste the tunnel_id, run Scan Tools, and save the discovered QR tools. Keep QRCODING_API_KEY and tunnel-client only on the private proxy.
+4. 2-4 Use the created app: start a new ChatGPT conversation, choose the QR Agent Studio dev app from the app/tool picker, and ask it to create or validate QR codes. Done when ChatGPT returns the generated QR result or validation summary.
 
 If the menu is missing, check plan, workspace admin/owner role, RBAC access, and whether you are on ChatGPT web. MCP apps are not available on mobile.
 

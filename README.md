@@ -127,13 +127,12 @@ tunnel-client run --profile qr-agent-proxy
 
 ChatGPT에는 `qras_` 키나 `?api_key=` URL을 넣지 않습니다. ChatGPT connector에서는 `Tunnel`을 선택하고 `tunnel_id`만 연결합니다. Codex/API 흐름에서는 해당 OpenAI product surface에서 제공하는 tunnel-backed MCP target을 사용합니다.
 
-ChatGPT 터널 세팅 흐름:
+ChatGPT 앱 세팅 흐름:
 
-1. `2-1` ChatGPT 웹 열기: `https://chatgpt.com/`. 올바른 workspace/account가 보이면 완료입니다.
-2. `2-2` 앱 생성 권한 켜기: `Workspace Settings -> Permissions & Roles -> Connected Data -> Developer mode / Create custom MCP connectors 켜기`를 복사합니다. developer/custom MCP connector 생성 권한이 켜지면 완료입니다.
-3. `2-3` QR 앱 만들기: `Workspace Settings -> Apps -> Create -> Connection: Tunnel -> Scan Tools`를 복사합니다. 앱 생성 화면에서 `Connection: Tunnel`이 선택되면 완료입니다.
-4. `2-4` 터널 연결하기: `https://chatgpt.com/#settings/Connectors`를 열고 `tunnel_id`를 선택하거나 붙여넣은 뒤 `Scan Tools`를 실행하고 검색된 QR 도구를 저장합니다.
-5. `2-5` private proxy 쪽 실행: 대시보드의 터널 가이드를 복사하고 private proxy 머신에서만 플레이스홀더를 교체합니다. `tunnel-client run`이 계속 실행되면 완료입니다.
+1. `2-1` 개발자 모드 켜기: `https://chatgpt.com/`을 열고 올바른 workspace인지 확인한 뒤, ChatGPT 설정에서 Developer mode 또는 custom MCP connector 생성을 켭니다. workspace에서 custom MCP 앱을 만들 수 있으면 완료입니다.
+2. `2-2` 앱 생성하기: 개발자 모드를 켠 뒤 ChatGPT의 Apps 또는 Workspace Apps에서 QR Agent Studio 앱을 생성합니다. 앱 이름과 설명을 입력할 수 있으면 완료입니다.
+3. `2-3` API와 터널 설정하기: ChatGPT에는 `qras_` 키를 붙여넣지 않습니다. 앱 생성 화면 또는 `https://chatgpt.com/#settings/Connectors`의 connector 설정에서 `Connection: Tunnel`을 선택하고 `tunnel_id`를 선택하거나 입력한 뒤 `Scan Tools`로 QR 도구를 저장합니다. `QRCODING_API_KEY`와 `tunnel-client`는 private proxy 쪽에만 둡니다.
+4. `2-4` 생성된 앱 사용하기: 새 ChatGPT 대화에서 앱/도구 선택 메뉴로 QR Agent Studio 개발 앱을 고르고 QR 생성 또는 검증을 요청합니다. 생성 결과나 검증 요약이 돌아오면 완료입니다.
 
 메뉴가 보이지 않으면 요금제, workspace 관리자/소유자 권한, RBAC 개발자 권한, ChatGPT 웹 접속 여부를 확인하세요. MCP 앱은 모바일에서 사용할 수 없습니다.
 
