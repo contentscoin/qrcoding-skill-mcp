@@ -1,0 +1,12 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "npm run build",
+  "rewrites": [
+    { "source": "/mcp", "destination": "/api?path=/mcp" },
+    { "source": "/openapi.json", "destination": "/api?path=/openapi.json" },
+    { "source": "/health", "destination": "/api?path=/health" },
+    { "source": "/v1/:path*", "destination": "/api?path=/v1/:path*" },
+    { "source": "/.well-known/:path*", "destination": "/api?path=/.well-known/:path*" },
+    { "source": "/", "destination": "/api?path=/" }
+  ]
+}
