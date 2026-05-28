@@ -184,21 +184,13 @@ The \`CONTROL_PLANE_API_KEY\` principal needs Tunnels Read + Use for the target 
 
 The hosted gateway remains available at \`${publicBase}/mcp\` for server cards, discovery, and legacy/dev clients. For ChatGPT + Codex, prefer the private proxy behind the tunnel.
 
-## ChatGPT Setup Click Flow
+## ChatGPT Tunnel Setup Flow
 
-1. Open ChatGPT: https://chatgpt.com/
-2. Copy the admin path: Workspace Settings -> Permissions & Roles -> Connected Data -> enable Developer mode / Create custom MCP connectors.
-3. Copy the app path: Workspace Settings -> Apps -> Create -> Connection: Tunnel -> Scan Tools.
-4. Open connector settings: https://chatgpt.com/#settings/Connectors
-5. Copy the dashboard tunnel guide and replace placeholders only on the private proxy machine.
-
-## ChatGPT App Setup Checklist
-
-1. Use ChatGPT web with Business, Enterprise/Edu, or an account that has developer mode access.
-2. Admin/owner: open Workspace Settings -> Permissions & Roles -> Connected Data and enable Developer mode / Create custom MCP connectors.
-3. Create the app from Workspace Settings -> Apps -> Create. If Create is missing, the account lacks admin/developer permission.
-4. Set Connection to Tunnel, select or paste the tunnel_id, then scan tools. Never paste a qras_ key into ChatGPT.
-5. After saving, open a new chat and select the Dev app from + -> More or mention it by name.
+1. 2-1 Open ChatGPT web: https://chatgpt.com/. Done when the correct workspace/account is visible.
+2. 2-2 Enable app creation: copy Workspace Settings -> Permissions & Roles -> Connected Data -> enable Developer mode / Create custom MCP connectors. Done when developer/custom MCP connector creation is enabled.
+3. 2-3 Create the QR app: copy Workspace Settings -> Apps -> Create -> Connection: Tunnel -> Scan Tools. Done when the app creation screen has Connection: Tunnel.
+4. 2-4 Connect the tunnel: open https://chatgpt.com/#settings/Connectors, select or paste the tunnel_id, run Scan Tools, and save the discovered QR tools.
+5. 2-5 Start the private proxy side: copy the dashboard tunnel guide and replace placeholders only on the private proxy machine. Done when tunnel-client run stays active.
 
 If the menu is missing, check plan, workspace admin/owner role, RBAC access, and whether you are on ChatGPT web. MCP apps are not available on mobile.
 
