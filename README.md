@@ -127,11 +127,13 @@ tunnel-client run --profile qr-agent-proxy
 
 ChatGPT에는 `qras_` 키나 `?api_key=` URL을 넣지 않습니다. ChatGPT connector에서는 `Tunnel`을 선택하고 `tunnel_id`만 연결합니다. Codex/API 흐름에서는 해당 OpenAI product surface에서 제공하는 tunnel-backed MCP target을 사용합니다.
 
-신뢰 가능한 ChatGPT 설정 링크:
+ChatGPT 세팅 클릭 흐름:
 
-- Connector settings: `https://chatgpt.com/#settings/Connectors`
-- Open ChatGPT: `https://chatgpt.com/`
-- OpenAI developer mode reference: `https://help.openai.com/en/articles/12584461-developer-mode-apps-and-full-mcp-connectors-in-chatgpt-beta`
+1. ChatGPT 열기: `https://chatgpt.com/`
+2. 관리자 경로 복사: `Workspace Settings -> Permissions & Roles -> Connected Data -> Developer mode / Create custom MCP connectors 켜기`
+3. 앱 생성 경로 복사: `Workspace Settings -> Apps -> Create -> Connection: Tunnel -> Scan Tools`
+4. Connector 설정 열기: `https://chatgpt.com/#settings/Connectors`
+5. 대시보드의 터널 가이드를 복사하고 private proxy 환경에서만 플레이스홀더를 교체합니다.
 
 ChatGPT 앱 세팅 체크리스트:
 

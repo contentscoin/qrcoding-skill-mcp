@@ -184,11 +184,13 @@ The \`CONTROL_PLANE_API_KEY\` principal needs Tunnels Read + Use for the target 
 
 The hosted gateway remains available at \`${publicBase}/mcp\` for server cards, discovery, and legacy/dev clients. For ChatGPT + Codex, prefer the private proxy behind the tunnel.
 
-## ChatGPT Setup Links
+## ChatGPT Setup Click Flow
 
-- Connector settings: https://chatgpt.com/#settings/Connectors
-- Open ChatGPT: https://chatgpt.com/
-- OpenAI developer mode reference: https://help.openai.com/en/articles/12584461-developer-mode-apps-and-full-mcp-connectors-in-chatgpt-beta
+1. Open ChatGPT: https://chatgpt.com/
+2. Copy the admin path: Workspace Settings -> Permissions & Roles -> Connected Data -> enable Developer mode / Create custom MCP connectors.
+3. Copy the app path: Workspace Settings -> Apps -> Create -> Connection: Tunnel -> Scan Tools.
+4. Open connector settings: https://chatgpt.com/#settings/Connectors
+5. Copy the dashboard tunnel guide and replace placeholders only on the private proxy machine.
 
 ## ChatGPT App Setup Checklist
 
