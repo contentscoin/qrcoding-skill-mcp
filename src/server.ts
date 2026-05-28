@@ -185,3 +185,8 @@ export async function writeResponse(response: ServerResponse, result: RouteRespo
   }
   response.end(result.body);
 }
+
+export default async function handler(request: IncomingMessage, response: ServerResponse) {
+  const result = await handleRequest(request);
+  await writeResponse(response, result);
+}
