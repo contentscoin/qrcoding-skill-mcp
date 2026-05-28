@@ -82,4 +82,32 @@ describe("qrcoding skill mcp gateway", () => {
     expect((init?.headers as Headers).get("x-api-key")).toBe("qras_test");
     fetchMock.mockRestore();
   });
+
+  it("accepts a ChatGPT-friendly API key query parameter", async () => {
+    const fetchMock = vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(
+      new Response(JSON.stringify({ jsonrpc: "2.0", id: 1, result: { tools: [] } }), {
+        status: 200,
+        headers: { "content-type": "application/json" }
+      })
+    );
+
+    const response = await handleRequest(
+      request("/mcp?api_key=qras_query_secret&session=abc", {
+        method: "POST",
+        headers: {
+          host: "skill.example",
+          accept: "application/json, text/event-stream",
+          "content-type": "application/json"
+        },
+        body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "tools/list" })
+      })
+    );
+
+    expect(response.statusCode).toBe(200);
+    const [url, init] = fetchMock.mock.calls[0];
+    expect(String(url)).toContain("/mcp?session=abc");
+    expect(String(url)).not.toContain("api_key");
+    expect((init?.headers as Headers).get("x-api-key")).toBe("qras_query_secret");
+    fetchMock.mockRestore();
+  });
 });

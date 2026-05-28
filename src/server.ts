@@ -55,22 +55,23 @@ function text(statusCode: number, body: string, contentType = "text/plain; chars
   };
 }
 
-function forwardedHeaders(request: Pick<IncomingMessage, "headers">): Headers {
+function forwardedHeaders(request: Pick<IncomingMessage, "headers">, apiKeyOverride?: string | null): Headers {
   const headers = new Headers();
   const passThrough = ["authorization", "content-type", "accept", "x-api-key", "x-locale"];
   for (const name of passThrough) {
     const value = headerValue(request.headers, name);
     if (value) headers.set(name, value);
   }
+  if (apiKeyOverride) headers.set("x-api-key", apiKeyOverride);
   return headers;
 }
 
-async function proxy(request: RequestLike, targetPath: string): Promise<RouteResponse> {
+async function proxy(request: RequestLike, targetPath: string, apiKeyOverride?: string | null): Promise<RouteResponse> {
   const targetUrl = `${getQrcodingBaseUrl()}${targetPath}`;
   const body = request.method === "GET" || request.method === "HEAD" ? undefined : await readBody(request);
   const response = await fetch(targetUrl, {
     method: request.method ?? "GET",
-    headers: forwardedHeaders(request),
+    headers: forwardedHeaders(request, apiKeyOverride),
     body: body?.toString("utf8")
   });
   const proxiedBody = Buffer.from(await response.arrayBuffer());
@@ -81,6 +82,19 @@ async function proxy(request: RequestLike, targetPath: string): Promise<RouteRes
     },
     body: proxiedBody
   };
+}
+
+function apiKeyFromQuery(parsed: URL): string | null {
+  const value = parsed.searchParams.get("api_key") ?? parsed.searchParams.get("key");
+  return value?.trim() || null;
+}
+
+function targetPathWithoutQueryAuth(path: string, parsed: URL): string {
+  const params = new URLSearchParams(parsed.searchParams);
+  params.delete("api_key");
+  params.delete("key");
+  const query = params.toString();
+  return query ? `${path}?${query}` : path;
 }
 
 async function openApi(request: RequestLike): Promise<RouteResponse> {
@@ -155,16 +169,22 @@ export async function handleRequest(request: RequestLike): Promise<RouteResponse
     return json(200, { ok: true, service: "qrcoding-skill-mcp", upstream: getQrcodingBaseUrl() });
   }
   if (path === "/mcp") {
+    const apiKey = apiKeyFromQuery(parsed);
     if (request.method === "GET") {
       return json(200, {
         ok: true,
         transport: "streamable-http-json-rpc",
         endpoint: "/mcp",
-        auth: { type: "apiKey", header: "x-api-key" },
+        auth: {
+          type: "apiKey",
+          header: "x-api-key",
+          queryParameter: "api_key",
+          note: "Use x-api-key when your MCP client supports headers. For ChatGPT custom apps, use /mcp?api_key=qras_... as a no-auth remote MCP URL."
+        },
         upstream: getQrcodingBaseUrl()
       });
     }
-    return proxy(request, `/mcp${parsed.search}`);
+    return proxy(request, targetPathWithoutQueryAuth("/mcp", parsed), apiKey);
   }
   if (path === "/openapi.json") return openApi(request);
   if (path === "/.well-known/mcp/server-card.json") return mcpServerCard(request);

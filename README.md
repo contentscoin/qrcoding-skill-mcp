@@ -18,23 +18,25 @@ API key는 `qras_`로 시작합니다.
 
 ## 설치하기
 
-아래 명령어를 터미널에 붙여 넣으면 설치가 진행됩니다.
+프로젝트 루트에서 설치 스크립트를 내려받아 내용을 확인한 뒤 실행합니다.
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/contentscoin/qrcoding-skill-mcp/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/contentscoin/qrcoding-skill-mcp/main/install.sh -o /tmp/qrcoding-install.sh
+cat /tmp/qrcoding-install.sh
+bash /tmp/qrcoding-install.sh --project --mode=full --skip-key
 ```
 
 자주 쓰는 설치 예:
 
 ```bash
 # 현재 프로젝트에 전체 스킬 설치
-curl -fsSL https://raw.githubusercontent.com/contentscoin/qrcoding-skill-mcp/main/install.sh | bash -s -- --project --mode=full
+bash /tmp/qrcoding-install.sh --project --mode=full --skip-key
 
 # Codex 전역에 운영용 스킬 설치
-curl -fsSL https://raw.githubusercontent.com/contentscoin/qrcoding-skill-mcp/main/install.sh | bash -s -- --codex --mode=ops
+bash /tmp/qrcoding-install.sh --codex --mode=ops --skip-key
 
 # Claude Code 전역에 개발/설계용 스킬 설치
-curl -fsSL https://raw.githubusercontent.com/contentscoin/qrcoding-skill-mcp/main/install.sh | bash -s -- --claude --mode=dev
+bash /tmp/qrcoding-install.sh --claude --mode=dev --skip-key
 ```
 
 ## 설치 구성
@@ -88,7 +90,9 @@ source ~/.bashrc
 MCP 서버는 위 스킬의 도구 실행 버전입니다. 에이전트가 QR Agent Studio 도구를 직접 호출하고, API reference 섹션도 도구로 확인할 수 있습니다.
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/contentscoin/qrcoding-skill-mcp/main/install-mcp.sh | bash
+curl -fsSL https://raw.githubusercontent.com/contentscoin/qrcoding-skill-mcp/main/install-mcp.sh -o /tmp/qrcoding-install-mcp.sh
+cat /tmp/qrcoding-install-mcp.sh
+bash /tmp/qrcoding-install-mcp.sh
 ```
 
 MCP 서버도 `QRCODING_API_KEY` 환경변수를 사용합니다.
@@ -116,6 +120,12 @@ MCP 서버도 `QRCODING_API_KEY` 환경변수를 사용합니다.
 | MCP Server Card | `https://qrcoding-skill-mcp.vercel.app/.well-known/mcp/server-card.json` |
 | Agent Skills Index | `https://qrcoding-skill-mcp.vercel.app/.well-known/agent-skills/index.json` |
 | OpenAPI | `https://qrcoding-skill-mcp.vercel.app/openapi.json` |
+
+ChatGPT 앱에서 로컬 설치 없이 테스트하려면 Developer mode에서 원격 MCP 앱을 만들고 아래 형식의 URL을 붙여 넣습니다. 이 URL은 API key를 포함하므로 secret처럼 다루세요.
+
+```text
+https://qrcoding-skill-mcp.vercel.app/mcp?api_key=qras_your_key
+```
 
 Streamable HTTP MCP 예:
 
