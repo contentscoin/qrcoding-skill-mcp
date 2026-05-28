@@ -38,6 +38,13 @@ The `CONTROL_PLANE_API_KEY` principal needs Tunnels Read + Use for the target tu
 
 The hosted gateway remains available at `https://qrcoding-skill-mcp.vercel.app/mcp` for server cards, discovery, and legacy/dev clients. For ChatGPT + Codex, prefer the private proxy behind the tunnel.
 
+## ChatGPT Setup Links
+
+- Connector settings: https://chatgpt.com/#settings/Connectors
+- Apps / developer mode settings: https://chatgpt.com/#settings/Apps
+- Workspace apps / create custom app: https://chatgpt.com/admin/ca
+- Developer mode help: https://help.openai.com/en/articles/12584461-developer-mode-apps-and-full-mcp-connectors-in-chatgpt-beta
+
 ## ChatGPT -> Codex Handoff Prompt
 
 When the user asks for a prompt they can paste into ChatGPT, provide this template:

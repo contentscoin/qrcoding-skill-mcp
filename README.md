@@ -127,6 +127,13 @@ tunnel-client run --profile qr-agent-proxy
 
 ChatGPT에는 `qras_` 키나 `?api_key=` URL을 넣지 않습니다. ChatGPT connector에서는 `Tunnel`을 선택하고 `tunnel_id`만 연결합니다. Codex/API 흐름에서는 해당 OpenAI product surface에서 제공하는 tunnel-backed MCP target을 사용합니다.
 
+ChatGPT 설정 링크:
+
+- Connector settings: `https://chatgpt.com/#settings/Connectors`
+- Apps / developer mode settings: `https://chatgpt.com/#settings/Apps`
+- Workspace apps / create custom app: `https://chatgpt.com/admin/ca`
+- Developer mode help: `https://help.openai.com/en/articles/12584461-developer-mode-apps-and-full-mcp-connectors-in-chatgpt-beta`
+
 대표 도구는 다음과 같습니다.
 
 | 도구 | 설명 |
