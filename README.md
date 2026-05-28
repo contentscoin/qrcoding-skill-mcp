@@ -55,7 +55,7 @@ bash /tmp/qrcoding-install.sh --codex --mode=full --skip-key
 | Codex | Codex 기본 스킬 경로에 설치 |
 | Claude Code | Claude Code 기본 스킬 경로에 설치 |
 | Codex + Claude Code | 양쪽에 모두 설치 |
-| 직접 경로 입력 | 원하는 스킬 설치 경로를 직접 입력 |
+| 직접 위치 지정 | 원하는 스킬 설치 위치를 직접 입력 |
 
 ## 제공 스킬
 
@@ -63,9 +63,9 @@ bash /tmp/qrcoding-install.sh --codex --mode=full --skip-key
 |---|---|
 | `qrcoding-campaign-operator` | QR Agent Studio QR 생성, 조회, 렌더, 검증, 동적 목적지 변경을 API key와 MCP로 직접 처리합니다. |
 | `qrcoding-integration-architect` | QR Agent Studio API, MCP, Agent Skill, OpenAPI plugin 연동을 설계하고 구현 계획을 작성합니다. |
-| `qrcoding-chatgpt-codex-bridge` | ChatGPT에서 Secure MCP Tunnel을 연결하고 Codex에 QR Coding 작업을 넘기는 프롬프트/설치 경로를 안내합니다. |
+| `qrcoding-chatgpt-codex-bridge` | ChatGPT에서 Secure MCP Tunnel을 연결하고 Codex에 QR Coding 작업을 넘기는 프롬프트와 설치 안내를 제공합니다. |
 
-## ChatGPT + Codex Secure Tunnel 경로
+## ChatGPT + Codex Secure Tunnel 연결
 
 추천 흐름은 공개 MCP URL에 `?api_key=`를 붙이는 방식이 아니라, private MCP proxy가 QR Agent Studio API key를 가지고 OpenAI Secure MCP Tunnel로 ChatGPT + Codex에 연결하는 방식입니다.
 
@@ -129,10 +129,12 @@ ChatGPT에는 `qras_` 키나 `?api_key=` URL을 넣지 않습니다. ChatGPT con
 
 ChatGPT 앱 세팅 흐름:
 
-1. `2-1` 개발자 모드 켜기: `https://chatgpt.com/`을 열고 올바른 workspace인지 확인한 뒤, ChatGPT 설정에서 Developer mode 또는 custom MCP connector 생성을 켭니다. workspace에서 custom MCP 앱을 만들 수 있으면 완료입니다.
-2. `2-2` 앱 생성하기: 개발자 모드를 켠 뒤 ChatGPT의 Apps 또는 Workspace Apps에서 QR Agent Studio 앱을 생성합니다. 앱 이름과 설명을 입력할 수 있으면 완료입니다.
-3. `2-3` API와 터널 설정하기: ChatGPT에는 `qras_` 키를 붙여넣지 않습니다. 앱 생성 화면 또는 `https://chatgpt.com/#settings/Connectors`의 connector 설정에서 `Connection: Tunnel`을 선택하고 `tunnel_id`를 선택하거나 입력한 뒤 `Scan Tools`로 QR 도구를 저장합니다. `QRCODING_API_KEY`와 `tunnel-client`는 private proxy 쪽에만 둡니다.
-4. `2-4` 생성된 앱 사용하기: 새 ChatGPT 대화에서 앱/도구 선택 메뉴로 QR Agent Studio 개발 앱을 고르고 QR 생성 또는 검증을 요청합니다. 생성 결과나 검증 요약이 돌아오면 완료입니다.
+ChatGPT 설정 전에 private MCP proxy에 `qras_` 키 하나를 준비합니다. 이 키는 ChatGPT에 붙여넣지 않습니다.
+
+1. 개발자 모드 켜기: `https://chatgpt.com/`을 열고 올바른 workspace인지 확인한 뒤, ChatGPT 설정에서 Developer mode 또는 custom MCP connector 생성을 켭니다. workspace에서 custom MCP 앱을 만들 수 있으면 완료입니다.
+2. 앱 생성하기: 개발자 모드를 켠 뒤 ChatGPT의 Apps 또는 Workspace Apps에서 QR Agent Studio 앱을 생성합니다. 앱 이름과 설명을 입력할 수 있으면 완료입니다.
+3. API와 터널 설정하기: 앱 생성 화면 또는 `https://chatgpt.com/#settings/Connectors`의 connector 설정에서 `Connection: Tunnel`을 선택하고 `tunnel_id`를 선택하거나 입력한 뒤 `Scan Tools`로 QR 도구를 저장합니다. `QRCODING_API_KEY`와 `tunnel-client`는 private proxy 쪽에만 둡니다.
+4. 생성된 앱 사용하기: 새 ChatGPT 대화에서 앱/도구 선택 메뉴로 QR Agent Studio 개발 앱을 고르고 QR 생성 또는 검증을 요청합니다. 생성 결과나 검증 요약이 돌아오면 완료입니다.
 
 메뉴가 보이지 않으면 요금제, workspace 관리자/소유자 권한, RBAC 개발자 권한, ChatGPT 웹 접속 여부를 확인하세요. MCP 앱은 모바일에서 사용할 수 없습니다.
 
