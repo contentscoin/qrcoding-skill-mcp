@@ -8,6 +8,7 @@ INSTALL_DIR="${QRCODING_MCP_DIR:-$PROJECT_DIR/.qrcoding/mcp-repo}"
 SERVER_NAME="${SERVER_NAME:-qrcoding}"
 TARGET="${1:-project}"
 SERVER_FILE=""
+TMP_DIR=""
 
 need() {
   if ! command -v "$1" >/dev/null 2>&1; then
@@ -56,8 +57,13 @@ archive_url() {
   printf '%s/archive/refs/heads/%s.tar.gz' "${REPO_URL%/}" "$REF"
 }
 
+cleanup() {
+  if [ -n "${TMP_DIR:-}" ]; then
+    rm -rf "$TMP_DIR"
+  fi
+}
+
 download_repo() {
-  local tmp
   local root
 
   if [ -z "${FORCE_REMOTE:-}" ] \
@@ -75,13 +81,13 @@ download_repo() {
   need mktemp
   need find
 
-  tmp="$(mktemp -d)"
-  trap 'rm -rf "$tmp"' EXIT
+  TMP_DIR="$(mktemp -d)"
+  trap cleanup EXIT
 
   echo "${REPO_URL} (${REF})에서 qrcoding MCP 서버 파일을 다운로드합니다..."
-  curl -fsSL "$(archive_url)" | tar -xz -C "$tmp"
+  curl -fsSL "$(archive_url)" | tar -xz -C "$TMP_DIR"
 
-  root="$(find "$tmp" -mindepth 1 -maxdepth 1 -type d | head -n 1)"
+  root="$(find "$TMP_DIR" -mindepth 1 -maxdepth 1 -type d | head -n 1)"
   if [ -z "$root" ] || [ ! -f "$root/mcp/qrcoding_mcp.mjs" ]; then
     echo "다운로드한 압축 파일에서 MCP 서버 파일을 찾지 못했습니다." >&2
     echo "REPO_URL과 REF 값을 확인하세요." >&2
