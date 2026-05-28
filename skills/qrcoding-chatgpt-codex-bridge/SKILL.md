@@ -42,13 +42,17 @@ The hosted gateway remains available at `https://qrcoding-skill-mcp.vercel.app/m
 
 - Connector settings: https://chatgpt.com/#settings/Connectors
 - Open ChatGPT: https://chatgpt.com/
-- Developer mode and app creation guide: https://help.openai.com/en/articles/12584461-developer-mode-apps-and-full-mcp-connectors-in-chatgpt-beta
+- OpenAI developer mode reference: https://help.openai.com/en/articles/12584461-developer-mode-apps-and-full-mcp-connectors-in-chatgpt-beta
 
-## ChatGPT Developer Mode Menu Paths
+## ChatGPT App Setup Checklist
 
-- Admin enablement: Workspace Settings -> Permissions & Roles -> Connected Data -> Developer mode / Create custom MCP connectors
-- Create a custom app: Workspace Settings -> Apps -> Create
-- Personal toggle after access is granted: Settings -> Apps -> Advanced Settings
+1. Use ChatGPT web with Business, Enterprise/Edu, or an account that has developer mode access.
+2. Admin/owner: open Workspace Settings -> Permissions & Roles -> Connected Data and enable Developer mode / Create custom MCP connectors.
+3. Create the app from Workspace Settings -> Apps -> Create. If Create is missing, the account lacks admin/developer permission.
+4. Set Connection to Tunnel, select or paste the tunnel_id, then scan tools. Never paste a qras_ key into ChatGPT.
+5. After saving, open a new chat and select the Dev app from + -> More or mention it by name.
+
+If the menu is missing, check plan, workspace admin/owner role, RBAC access, and whether you are on ChatGPT web. MCP apps are not available on mobile.
 
 ## ChatGPT -> Codex Handoff Prompt
 

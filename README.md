@@ -127,17 +127,21 @@ tunnel-client run --profile qr-agent-proxy
 
 ChatGPT에는 `qras_` 키나 `?api_key=` URL을 넣지 않습니다. ChatGPT connector에서는 `Tunnel`을 선택하고 `tunnel_id`만 연결합니다. Codex/API 흐름에서는 해당 OpenAI product surface에서 제공하는 tunnel-backed MCP target을 사용합니다.
 
-ChatGPT 설정 링크:
+신뢰 가능한 ChatGPT 설정 링크:
 
 - Connector settings: `https://chatgpt.com/#settings/Connectors`
 - Open ChatGPT: `https://chatgpt.com/`
-- Developer mode and app creation guide: `https://help.openai.com/en/articles/12584461-developer-mode-apps-and-full-mcp-connectors-in-chatgpt-beta`
+- OpenAI developer mode reference: `https://help.openai.com/en/articles/12584461-developer-mode-apps-and-full-mcp-connectors-in-chatgpt-beta`
 
-ChatGPT 개발자 모드 메뉴 경로:
+ChatGPT 앱 세팅 체크리스트:
 
-- Admin enablement: `Workspace Settings -> Permissions & Roles -> Connected Data -> Developer mode / Create custom MCP connectors`
-- Create a custom app: `Workspace Settings -> Apps -> Create`
-- Personal toggle after access is granted: `Settings -> Apps -> Advanced Settings`
+1. ChatGPT 웹에서 Business, Enterprise/Edu, 또는 개발자 모드 권한이 있는 계정으로 접속합니다.
+2. 관리자/소유자라면 `Workspace Settings -> Permissions & Roles -> Connected Data`에서 `Developer mode / Create custom MCP connectors`를 켭니다.
+3. `Workspace Settings -> Apps -> Create`에서 앱을 만듭니다. `Create`가 없으면 계정에 관리자 또는 개발자 권한이 없는 상태입니다.
+4. `Connection`은 `Tunnel`로 선택하고 `tunnel_id`를 고르거나 붙여넣은 뒤 `Scan Tools`를 실행합니다. `qras_` 키는 ChatGPT에 붙여넣지 않습니다.
+5. 저장 후 새 채팅에서 `+ -> More`로 `Dev` 앱을 선택하거나 앱 이름을 멘션해서 사용합니다.
+
+메뉴가 보이지 않으면 요금제, workspace 관리자/소유자 권한, RBAC 개발자 권한, ChatGPT 웹 접속 여부를 확인하세요. MCP 앱은 모바일에서 사용할 수 없습니다.
 
 대표 도구는 다음과 같습니다.
 
