@@ -63,6 +63,14 @@ bash /tmp/qrcoding-install.sh --claude --mode=dev --skip-key
 |---|---|
 | `qrcoding-campaign-operator` | QR Agent Studio QR 생성, 조회, 렌더, 검증, 동적 목적지 변경을 API key와 MCP로 직접 처리합니다. |
 | `qrcoding-integration-architect` | QR Agent Studio API, MCP, Agent Skill, OpenAPI plugin 연동을 설계하고 구현 계획을 작성합니다. |
+| `qrcoding-chatgpt-codex-bridge` | ChatGPT에서 원격 MCP 앱으로 바로 연결하거나 Codex에 QR Coding 작업을 넘기는 프롬프트/설치 경로를 안내합니다. |
+
+## 4가지 사용 경로
+
+1. **ChatGPT 앱 등록**: Developer mode에서 원격 MCP 앱을 만들고 No Authentication으로 설정한 뒤 `https://qrcoding-skill-mcp.vercel.app/mcp?api_key=qras_your_key`를 붙여넣습니다.
+2. **ChatGPT -> Codex 스킬화**: ChatGPT에서 Codex를 사용할 수 있는 환경이면 `qrcoding-chatgpt-codex-bridge`의 handoff prompt로 Codex에게 QR Coding 스킬 사용을 지시합니다.
+3. **Codex 스킬**: `bash /tmp/qrcoding-install.sh --codex --mode=full --skip-key`로 Codex 스킬 경로에 설치합니다.
+4. **Claude 스킬**: `bash /tmp/qrcoding-install.sh --claude --mode=full --skip-key`로 Claude Code 스킬 경로에 설치합니다.
 
 ## API key 바꾸기
 

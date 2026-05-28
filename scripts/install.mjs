@@ -17,8 +17,8 @@ const projectSkillsDir = process.env.QRCODING_PROJECT_SKILLS_DIR || path.join(pr
 const setupOptions = {
   dev: {
     label: "개발용",
-    description: "API, MCP, OpenAPI plugin 연동 설계 스킬만 설치합니다.",
-    skills: ["qrcoding-integration-architect"],
+    description: "API, MCP, OpenAPI plugin, ChatGPT-Codex 브리지 설계 스킬을 설치합니다.",
+    skills: ["qrcoding-integration-architect", "qrcoding-chatgpt-codex-bridge"],
   },
   ops: {
     label: "운영용",
@@ -27,8 +27,8 @@ const setupOptions = {
   },
   full: {
     label: "전체",
-    description: "개발용과 운영용 스킬을 모두 설치합니다.",
-    skills: ["qrcoding-integration-architect", "qrcoding-campaign-operator"],
+    description: "개발용, 운영용, ChatGPT-Codex 브리지 스킬을 모두 설치합니다.",
+    skills: ["qrcoding-integration-architect", "qrcoding-campaign-operator", "qrcoding-chatgpt-codex-bridge"],
   },
 };
 

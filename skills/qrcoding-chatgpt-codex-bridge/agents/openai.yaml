@@ -1,0 +1,7 @@
+interface:
+  display_name: "QR Coding ChatGPT Codex Bridge"
+  short_description: "ChatGPT에서 Codex 또는 원격 MCP 앱으로 QR Coding 사용"
+  default_prompt: "Use $qrcoding-chatgpt-codex-bridge to choose the simplest ChatGPT, Codex, or Claude path for QR Coding."
+
+policy:
+  allow_implicit_invocation: true

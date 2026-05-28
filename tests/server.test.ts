@@ -31,8 +31,8 @@ describe("qrcoding skill mcp gateway", () => {
 
     const index = await handleRequest(request("/.well-known/agent-skills/index.json"));
     expect(index.statusCode).toBe(200);
-    expect(JSON.parse(String(index.body))).toMatchObject({
-      skills: [
+    expect(JSON.parse(String(index.body)).skills).toEqual(
+      expect.arrayContaining([
         expect.objectContaining({
           name: "qrcoding-campaign-operator",
           type: "skill-md",
@@ -42,9 +42,14 @@ describe("qrcoding skill mcp gateway", () => {
           name: "qrcoding-integration-architect",
           type: "skill-md",
           url: "https://skill.example/.well-known/agent-skills/qrcoding-integration-architect/SKILL.md"
+        }),
+        expect.objectContaining({
+          name: "qrcoding-chatgpt-codex-bridge",
+          type: "skill-md",
+          url: "https://skill.example/.well-known/agent-skills/qrcoding-chatgpt-codex-bridge/SKILL.md"
         })
-      ]
-    });
+      ])
+    );
 
     const skill = await handleRequest(request("/.well-known/agent-skills/qrcoding-campaign-operator/SKILL.md"));
     expect(String(skill.body)).toContain("x-api-key: <api-key>");
@@ -53,6 +58,10 @@ describe("qrcoding skill mcp gateway", () => {
     const legacy = await handleRequest(request("/.well-known/agent-skills/qrcoding/SKILL.md"));
     expect(legacy.statusCode).toBe(200);
     expect(String(legacy.body)).toContain("qrcoding-campaign-operator");
+
+    const bridge = await handleRequest(request("/.well-known/agent-skills/qrcoding-chatgpt-codex-bridge/SKILL.md"));
+    expect(String(bridge.body)).toContain("ChatGPT -> Codex Handoff Prompt");
+    expect(String(bridge.body)).toContain("No Authentication");
   });
 
   it("proxies MCP requests with API key headers", async () => {

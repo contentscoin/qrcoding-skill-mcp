@@ -142,6 +142,53 @@ Do not implement until the user approves a concrete plan in a later turn. Build 
 `;
 }
 
+function chatGptCodexBridgeMarkdown(publicBaseUrl: string): string {
+  const publicBase = publicBaseUrl.replace(/\/$/, "");
+  return `---
+name: qrcoding-chatgpt-codex-bridge
+description: ChatGPT에서 Codex를 불러 QR Coding 작업을 넘기거나, ChatGPT Developer mode 원격 MCP 앱을 설정하도록 안내하는 브리지 스킬.
+disable-model-invocation: false
+allowed-tools: "Read, Grep, Bash(test *), Bash(curl *)"
+---
+
+# QR Coding ChatGPT Codex Bridge
+
+Use this skill when the user wants the simplest path to use QR Coding from ChatGPT, especially when they prefer not to install local MCP manually.
+
+## Four Supported Paths
+
+1. ChatGPT app registration: Developer mode, remote MCP app, No Authentication.
+2. ChatGPT -> Codex handoff: ask ChatGPT to invoke Codex and use QR Coding skills.
+3. Codex skill install: install QR Coding skills into Codex.
+4. Claude skill install: install QR Coding skills into Claude Code.
+
+## ChatGPT App URL
+
+After issuing a QR Agent Studio API key, paste this URL into ChatGPT Developer mode as a remote MCP server with No Authentication:
+
+\`\`\`text
+${publicBase}/mcp?api_key=qras_your_key
+\`\`\`
+
+Treat the full URL as a secret because it contains the API key.
+
+## ChatGPT -> Codex Handoff Prompt
+
+\`\`\`text
+Use Codex for this QR Coding task.
+
+In the project root, use the QR Coding skills:
+- qrcoding-campaign-operator for QR list/create/render/validate/update work
+- qrcoding-integration-architect for MCP/API/plugin setup
+- qrcoding-chatgpt-codex-bridge for ChatGPT handoff setup
+
+If QRCODING_API_KEY is not configured, ask me for a qras_ API key or tell me to create one in the QR Agent Studio dashboard. Do not expose the full key in logs or final answers.
+
+First verify the tool path with a read-only list/account request. Then perform the requested QR operation.
+\`\`\`
+`;
+}
+
 export function skillArtifacts(publicBaseUrl: string, qrcodingBaseUrl: string): SkillArtifact[] {
   return [
     {
@@ -153,6 +200,11 @@ export function skillArtifacts(publicBaseUrl: string, qrcodingBaseUrl: string): 
       name: "qrcoding-integration-architect",
       description: "Design QR Agent Studio API, MCP, Agent Skill, and OpenAPI plugin integrations.",
       markdown: integrationArchitectMarkdown(publicBaseUrl, qrcodingBaseUrl)
+    },
+    {
+      name: "qrcoding-chatgpt-codex-bridge",
+      description: "Guide ChatGPT users to either remote MCP app setup or Codex handoff for QR Coding.",
+      markdown: chatGptCodexBridgeMarkdown(publicBaseUrl)
     }
   ];
 }
