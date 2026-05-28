@@ -41,9 +41,14 @@ The hosted gateway remains available at `https://qrcoding-skill-mcp.vercel.app/m
 ## ChatGPT Setup Links
 
 - Connector settings: https://chatgpt.com/#settings/Connectors
-- Apps / developer mode settings: https://chatgpt.com/#settings/Apps
-- Workspace apps / create custom app: https://chatgpt.com/admin/ca
-- Developer mode help: https://help.openai.com/en/articles/12584461-developer-mode-apps-and-full-mcp-connectors-in-chatgpt-beta
+- Open ChatGPT: https://chatgpt.com/
+- Developer mode and app creation guide: https://help.openai.com/en/articles/12584461-developer-mode-apps-and-full-mcp-connectors-in-chatgpt-beta
+
+## ChatGPT Developer Mode Menu Paths
+
+- Admin enablement: Workspace Settings -> Permissions & Roles -> Connected Data -> Developer mode / Create custom MCP connectors
+- Create a custom app: Workspace Settings -> Apps -> Create
+- Personal toggle after access is granted: Settings -> Apps -> Advanced Settings
 
 ## ChatGPT -> Codex Handoff Prompt
 

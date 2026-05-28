@@ -130,9 +130,14 @@ ChatGPT에는 `qras_` 키나 `?api_key=` URL을 넣지 않습니다. ChatGPT con
 ChatGPT 설정 링크:
 
 - Connector settings: `https://chatgpt.com/#settings/Connectors`
-- Apps / developer mode settings: `https://chatgpt.com/#settings/Apps`
-- Workspace apps / create custom app: `https://chatgpt.com/admin/ca`
-- Developer mode help: `https://help.openai.com/en/articles/12584461-developer-mode-apps-and-full-mcp-connectors-in-chatgpt-beta`
+- Open ChatGPT: `https://chatgpt.com/`
+- Developer mode and app creation guide: `https://help.openai.com/en/articles/12584461-developer-mode-apps-and-full-mcp-connectors-in-chatgpt-beta`
+
+ChatGPT 개발자 모드 메뉴 경로:
+
+- Admin enablement: `Workspace Settings -> Permissions & Roles -> Connected Data -> Developer mode / Create custom MCP connectors`
+- Create a custom app: `Workspace Settings -> Apps -> Create`
+- Personal toggle after access is granted: `Settings -> Apps -> Advanced Settings`
 
 대표 도구는 다음과 같습니다.
 
