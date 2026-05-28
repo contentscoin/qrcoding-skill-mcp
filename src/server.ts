@@ -89,6 +89,14 @@ function apiKeyFromQuery(parsed: URL): string | null {
   return value?.trim() || null;
 }
 
+function apiKeyFromEnv(): string | null {
+  return process.env.QRCODING_API_KEY?.trim() || null;
+}
+
+function apiKeyOverrideForRequest(parsed: URL, request: Pick<IncomingMessage, "headers">): string | null {
+  return apiKeyFromQuery(parsed) ?? (headerValue(request.headers, "x-api-key") ? null : apiKeyFromEnv());
+}
+
 function targetPathWithoutQueryAuth(path: string, parsed: URL): string {
   const params = new URLSearchParams(parsed.searchParams);
   params.delete("api_key");
@@ -127,7 +135,12 @@ function mcpServerCard(request: RequestLike): RouteResponse {
     authentication: {
       type: "apiKey",
       header: "x-api-key",
-      note: "Send a QR Agent Studio API key that starts with qras_."
+      note: "For Secure MCP Tunnel, set QRCODING_API_KEY on the private MCP proxy so ChatGPT only connects by tunnel_id."
+    },
+    secureTunnel: {
+      recommendedFor: "ChatGPT + Codex",
+      environmentVariable: "QRCODING_API_KEY",
+      note: "Do not paste qras_ keys or ?api_key= URLs into ChatGPT when using Secure MCP Tunnel."
     },
     upstream: {
       url: getQrcodingBaseUrl()
@@ -162,6 +175,11 @@ export async function handleRequest(request: RequestLike): Promise<RouteResponse
       mcpServerCard: "/.well-known/mcp/server-card.json",
       agentSkills: "/.well-known/agent-skills/index.json",
       openapi: "/openapi.json",
+      secureTunnel: {
+        recommendedFor: "ChatGPT + Codex",
+        environmentVariable: "QRCODING_API_KEY",
+        note: "Run this gateway as a private MCP proxy behind OpenAI Secure MCP Tunnel."
+      },
       upstream: getQrcodingBaseUrl()
     });
   }
@@ -169,7 +187,7 @@ export async function handleRequest(request: RequestLike): Promise<RouteResponse
     return json(200, { ok: true, service: "qrcoding-skill-mcp", upstream: getQrcodingBaseUrl() });
   }
   if (path === "/mcp") {
-    const apiKey = apiKeyFromQuery(parsed);
+    const apiKey = apiKeyOverrideForRequest(parsed, request);
     if (request.method === "GET") {
       return json(200, {
         ok: true,
@@ -179,7 +197,9 @@ export async function handleRequest(request: RequestLike): Promise<RouteResponse
           type: "apiKey",
           header: "x-api-key",
           queryParameter: "api_key",
-          note: "Use x-api-key when your MCP client supports headers. For ChatGPT custom apps, use /mcp?api_key=qras_... as a no-auth remote MCP URL."
+          environmentVariable: "QRCODING_API_KEY",
+          note:
+            "Recommended for ChatGPT + Codex: use OpenAI Secure MCP Tunnel and keep QRCODING_API_KEY on this private proxy. Query api_key remains available only for legacy/dev clients."
         },
         upstream: getQrcodingBaseUrl()
       });
@@ -198,7 +218,7 @@ export async function handleRequest(request: RequestLike): Promise<RouteResponse
     }
     return text(200, skillMarkdown(getPublicBaseUrl(request), getQrcodingBaseUrl(), artifactName), "text/markdown; charset=utf-8");
   }
-  if (path.startsWith("/v1/")) return proxy(request, `${path}${parsed.search}`);
+  if (path.startsWith("/v1/")) return proxy(request, `${path}${parsed.search}`, apiKeyOverrideForRequest(parsed, request));
   return json(404, { code: "not_found", message: "Route not found." });
 }
 

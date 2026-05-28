@@ -61,7 +61,8 @@ describe("qrcoding skill mcp gateway", () => {
 
     const bridge = await handleRequest(request("/.well-known/agent-skills/qrcoding-chatgpt-codex-bridge/SKILL.md"));
     expect(String(bridge.body)).toContain("ChatGPT -> Codex Handoff Prompt");
-    expect(String(bridge.body)).toContain("No Authentication");
+    expect(String(bridge.body)).toContain("Secure MCP Tunnel");
+    expect(String(bridge.body)).toContain("QRCODING_API_KEY");
   });
 
   it("proxies MCP requests with API key headers", async () => {
@@ -118,5 +119,38 @@ describe("qrcoding skill mcp gateway", () => {
     expect(String(url)).not.toContain("api_key");
     expect((init?.headers as Headers).get("x-api-key")).toBe("qras_query_secret");
     fetchMock.mockRestore();
+  });
+
+  it("uses QRCODING_API_KEY from the private proxy environment when no header or query key is provided", async () => {
+    const previousApiKey = process.env.QRCODING_API_KEY;
+    process.env.QRCODING_API_KEY = "qras_env_secret";
+    const fetchMock = vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(
+      new Response(JSON.stringify({ jsonrpc: "2.0", id: 1, result: { tools: [] } }), {
+        status: 200,
+        headers: { "content-type": "application/json" }
+      })
+    );
+
+    const response = await handleRequest(
+      request("/mcp", {
+        method: "POST",
+        headers: {
+          host: "skill.example",
+          accept: "application/json, text/event-stream",
+          "content-type": "application/json"
+        },
+        body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "tools/list" })
+      })
+    );
+
+    expect(response.statusCode).toBe(200);
+    const [, init] = fetchMock.mock.calls[0];
+    expect((init?.headers as Headers).get("x-api-key")).toBe("qras_env_secret");
+    fetchMock.mockRestore();
+    if (previousApiKey === undefined) {
+      delete process.env.QRCODING_API_KEY;
+    } else {
+      process.env.QRCODING_API_KEY = previousApiKey;
+    }
   });
 });
