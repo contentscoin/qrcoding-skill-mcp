@@ -63,6 +63,8 @@ describe("qrcoding skill mcp gateway", () => {
     expect(String(bridge.body)).toContain("ChatGPT -> Codex Handoff Prompt");
     expect(String(bridge.body)).toContain("Secure MCP Tunnel");
     expect(String(bridge.body)).toContain("QRCODING_API_KEY");
+    expect(String(bridge.body)).toContain("<YOUR_QR_AGENT_STUDIO_API_KEY>");
+    expect(String(bridge.body)).not.toContain("qras_your_key");
   });
 
   it("proxies MCP requests with API key headers", async () => {

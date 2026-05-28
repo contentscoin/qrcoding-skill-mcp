@@ -79,7 +79,7 @@ bash /tmp/qrcoding-install.sh --codex --mode=full --skip-key
 설치 후 API key를 바꾸려면 private MCP proxy 또는 Codex 환경의 `QRCODING_API_KEY` 값을 수정합니다.
 
 ```bash
-export QRCODING_API_KEY="qras_your_key"
+export QRCODING_API_KEY="<YOUR_QR_AGENT_STUDIO_API_KEY>"
 export QRCODING_MCP_URL="https://qrcoding-skill-mcp.vercel.app/mcp"
 ```
 
@@ -110,19 +110,22 @@ MCP 서버도 `QRCODING_API_KEY` 환경변수를 사용합니다.
 Secure MCP Tunnel로 ChatGPT + Codex에 연결할 때는 private MCP proxy에서 아래처럼 준비합니다.
 
 ```bash
-export QRCODING_API_KEY="qras_your_key"
-export CONTROL_PLANE_API_KEY="sk-..."
+export QRCODING_API_KEY="<YOUR_QR_AGENT_STUDIO_API_KEY>"
+export CONTROL_PLANE_API_KEY="<OPENAI_RUNTIME_API_KEY_WITH_TUNNELS_READ_USE>"
+tunnel_id="<YOUR_TUNNEL_ID>"
 
 tunnel-client init \
   --profile qr-agent-proxy \
-  --tunnel-id tunnel_0123456789abcdef0123456789abcdef \
+  --tunnel-id "$tunnel_id" \
   --mcp-server-url http://localhost:3000/mcp
 
 tunnel-client doctor --profile qr-agent-proxy --explain
 tunnel-client run --profile qr-agent-proxy
 ```
 
-ChatGPT에는 `qras_` 키나 `?api_key=` URL을 넣지 않습니다. ChatGPT connector에서는 `Tunnel`을 선택하고 `tunnel_id`만 연결합니다.
+`CONTROL_PLANE_API_KEY`는 대상 tunnel에 대해 Tunnels Read + Use 권한이 필요합니다. tunnel을 만들거나 수정하는 운영자에게만 Tunnels Read + Manage 권한을 부여하세요.
+
+ChatGPT에는 `qras_` 키나 `?api_key=` URL을 넣지 않습니다. ChatGPT connector에서는 `Tunnel`을 선택하고 `tunnel_id`만 연결합니다. Codex/API 흐름에서는 해당 OpenAI product surface에서 제공하는 tunnel-backed MCP target을 사용합니다.
 
 대표 도구는 다음과 같습니다.
 
@@ -150,7 +153,7 @@ ChatGPT에는 `qras_` 키나 `?api_key=` URL을 넣지 않습니다. ChatGPT con
 
 Hosted gateway는 server card, skill discovery, OpenAPI, legacy/dev client 테스트용입니다. ChatGPT + Codex 운영 흐름에서는 private MCP proxy와 Secure MCP Tunnel을 우선 사용하세요.
 
-Legacy/dev client에서만 쿼리 인증이 필요하면 `/mcp?api_key=qras_your_key` 형식을 사용할 수 있지만, 이 URL 자체가 secret이므로 ChatGPT에는 붙이지 않습니다.
+Legacy/dev client에서만 쿼리 인증이 필요하면 `/mcp?api_key=<YOUR_QR_AGENT_STUDIO_API_KEY>` 형식을 사용할 수 있지만, 이 URL 자체가 secret이므로 ChatGPT에는 붙이지 않습니다.
 
 Streamable HTTP MCP 예:
 

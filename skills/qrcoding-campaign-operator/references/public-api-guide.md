@@ -19,7 +19,7 @@ Create API keys in the QR Agent Studio dashboard. The full key is shown once.
 Every skill, plugin, MCP, or REST request should send:
 
 ```http
-x-api-key: qras_your_key
+x-api-key: <YOUR_QR_AGENT_STUDIO_API_KEY>
 ```
 
 Never expose the full key in logs, screenshots, QR payloads, markdown, or public URLs.
@@ -78,11 +78,11 @@ Response:
 
 ```json
 {
-  "apiKey": "qras_...",
+  "apiKey": "<YOUR_QR_AGENT_STUDIO_API_KEY>",
   "key": {
     "id": "uuid",
     "name": "Plugin key",
-    "keyPrefix": "qras_abcd..."
+    "keyPrefix": "qras_<prefix>..."
   }
 }
 ```

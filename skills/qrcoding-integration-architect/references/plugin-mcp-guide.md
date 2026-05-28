@@ -5,7 +5,7 @@
 Use API key auth unless a specific client requires OAuth account linking.
 
 ```text
-x-api-key: qras_your_key
+x-api-key: <YOUR_QR_AGENT_STUDIO_API_KEY>
 ```
 
 ## OpenAPI Plugin
@@ -22,7 +22,7 @@ Plugin secret setting:
 
 ```text
 Header name: x-api-key
-Value: qras_your_key
+Value: <YOUR_QR_AGENT_STUDIO_API_KEY>
 ```
 
 ## MCP Client Config
@@ -34,7 +34,7 @@ Value: qras_your_key
       "type": "streamable-http",
       "url": "https://qrcoding-skill-mcp.vercel.app/mcp",
       "headers": {
-        "x-api-key": "qras_your_key"
+        "x-api-key": "<YOUR_QR_AGENT_STUDIO_API_KEY>"
       }
     }
   }
@@ -52,7 +52,7 @@ node mcp/qrcoding_mcp.mjs
 Environment:
 
 ```bash
-export QRCODING_API_KEY="qras_your_key"
+export QRCODING_API_KEY="<YOUR_QR_AGENT_STUDIO_API_KEY>"
 export QRCODING_MCP_URL="https://qrcoding-skill-mcp.vercel.app/mcp"
 ```
 

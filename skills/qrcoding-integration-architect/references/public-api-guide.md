@@ -16,7 +16,7 @@ QR Agent Studio stores QR codes as reproducible JSON specs and regenerates asset
 Use API key auth for skills, plugins, automation, and non-ChatGPT clients.
 
 ```http
-x-api-key: qras_your_key
+x-api-key: <YOUR_QR_AGENT_STUDIO_API_KEY>
 ```
 
 OAuth discovery endpoints exist for account-linking clients, but API key auth is the preferred integration pattern.

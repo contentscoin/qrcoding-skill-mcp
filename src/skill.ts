@@ -133,7 +133,7 @@ Do not implement until the user approves a concrete plan in a later turn. Build 
       "type": "streamable-http",
       "url": "${publicBase}/mcp",
       "headers": {
-        "x-api-key": "qras_your_api_key"
+        "x-api-key": "<YOUR_QR_AGENT_STUDIO_API_KEY>"
       }
     }
   }
@@ -167,17 +167,20 @@ Do not paste a \`qras_\` key or a \`?api_key=\` URL into ChatGPT when using Secu
 ## Private MCP Proxy
 
 \`\`\`bash
-export QRCODING_API_KEY="qras_your_key"
-export CONTROL_PLANE_API_KEY="sk-..."
+export QRCODING_API_KEY="<YOUR_QR_AGENT_STUDIO_API_KEY>"
+export CONTROL_PLANE_API_KEY="<OPENAI_RUNTIME_API_KEY_WITH_TUNNELS_READ_USE>"
+tunnel_id="<YOUR_TUNNEL_ID>"
 
 tunnel-client init \\
   --profile qr-agent-proxy \\
-  --tunnel-id tunnel_0123456789abcdef0123456789abcdef \\
+  --tunnel-id "$tunnel_id" \\
   --mcp-server-url http://localhost:3000/mcp
 
 tunnel-client doctor --profile qr-agent-proxy --explain
 tunnel-client run --profile qr-agent-proxy
 \`\`\`
+
+The \`CONTROL_PLANE_API_KEY\` principal needs Tunnels Read + Use for the target tunnel. Grant Tunnels Read + Manage only to operators that create or edit tunnels.
 
 The hosted gateway remains available at \`${publicBase}/mcp\` for server cards, discovery, and legacy/dev clients. For ChatGPT + Codex, prefer the private proxy behind the tunnel.
 
@@ -186,7 +189,7 @@ The hosted gateway remains available at \`${publicBase}/mcp\` for server cards, 
 \`\`\`text
 Use Codex for this QR Coding task.
 
-Prefer the QR Coding MCP tools exposed through the OpenAI Secure MCP Tunnel. The QR Agent Studio API key should stay in QRCODING_API_KEY on the private MCP proxy or Codex environment, not in ChatGPT.
+Use the tunnel-backed MCP target exposed by the supported OpenAI product surface when it is available. The QR Agent Studio API key should stay in QRCODING_API_KEY on the private MCP proxy or Codex environment, not in ChatGPT.
 
 In Codex, use the QR Coding skills:
 - qrcoding-campaign-operator for QR list/create/render/validate/update work
