@@ -84,17 +84,17 @@ async function proxy(request: RequestLike, targetPath: string, apiKeyOverride?: 
   };
 }
 
-function apiKeyFromQuery(parsed: URL): string | null {
-  const value = parsed.searchParams.get("api_key") ?? parsed.searchParams.get("key");
-  return value?.trim() || null;
-}
-
 function apiKeyFromEnv(): string | null {
   return process.env.QRCODING_API_KEY?.trim() || null;
 }
 
-function apiKeyOverrideForRequest(parsed: URL, request: Pick<IncomingMessage, "headers">): string | null {
-  return apiKeyFromQuery(parsed) ?? (headerValue(request.headers, "x-api-key") ? null : apiKeyFromEnv());
+// The gateway no longer accepts the API key as a URL query parameter — query
+// strings leak into CDN/proxy/access logs and browser history. Keys come only
+// from the x-api-key header (passed through) or the QRCODING_API_KEY env var on
+// this private proxy. Any ?api_key=/?key= is still stripped before forwarding
+// (defense-in-depth) but never used.
+function apiKeyOverrideForRequest(request: Pick<IncomingMessage, "headers">): string | null {
+  return headerValue(request.headers, "x-api-key") ? null : apiKeyFromEnv();
 }
 
 function targetPathWithoutQueryAuth(path: string, parsed: URL): string {
@@ -187,7 +187,7 @@ export async function handleRequest(request: RequestLike): Promise<RouteResponse
     return json(200, { ok: true, service: "qrcoding-skill-mcp", upstream: getQrcodingBaseUrl() });
   }
   if (path === "/mcp") {
-    const apiKey = apiKeyOverrideForRequest(parsed, request);
+    const apiKey = apiKeyOverrideForRequest(request);
     if (request.method === "GET") {
       return json(200, {
         ok: true,
@@ -196,10 +196,9 @@ export async function handleRequest(request: RequestLike): Promise<RouteResponse
         auth: {
           type: "apiKey",
           header: "x-api-key",
-          queryParameter: "api_key",
           environmentVariable: "QRCODING_API_KEY",
           note:
-            "Recommended for ChatGPT + Codex: use OpenAI Secure MCP Tunnel and keep QRCODING_API_KEY on this private proxy. Query api_key remains available only for legacy/dev clients."
+            "Recommended for ChatGPT + Codex: use OpenAI Secure MCP Tunnel and keep QRCODING_API_KEY on this private proxy. Send the key via the x-api-key header or the env var — never in the URL (query strings leak into logs)."
         },
         upstream: getQrcodingBaseUrl()
       });
@@ -218,7 +217,9 @@ export async function handleRequest(request: RequestLike): Promise<RouteResponse
     }
     return text(200, skillMarkdown(getPublicBaseUrl(request), getQrcodingBaseUrl(), artifactName), "text/markdown; charset=utf-8");
   }
-  if (path.startsWith("/v1/")) return proxy(request, `${path}${parsed.search}`, apiKeyOverrideForRequest(parsed, request));
+  if (path.startsWith("/v1/")) {
+    return proxy(request, targetPathWithoutQueryAuth(path, parsed), apiKeyOverrideForRequest(request));
+  }
   return json(404, { code: "not_found", message: "Route not found." });
 }
 
