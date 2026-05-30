@@ -96,7 +96,9 @@ describe("qrcoding skill mcp gateway", () => {
     fetchMock.mockRestore();
   });
 
-  it("accepts a ChatGPT-friendly API key query parameter", async () => {
+  it("ignores an api_key URL query parameter (header/env only; stripped before forwarding)", async () => {
+    const previousApiKey = process.env.QRCODING_API_KEY;
+    delete process.env.QRCODING_API_KEY;
     const fetchMock = vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(
       new Response(JSON.stringify({ jsonrpc: "2.0", id: 1, result: { tools: [] } }), {
         status: 200,
@@ -118,10 +120,16 @@ describe("qrcoding skill mcp gateway", () => {
 
     expect(response.statusCode).toBe(200);
     const [url, init] = fetchMock.mock.calls[0];
+    // api_key is stripped from the forwarded URL and NOT promoted to a header.
     expect(String(url)).toContain("/mcp?session=abc");
     expect(String(url)).not.toContain("api_key");
-    expect((init?.headers as Headers).get("x-api-key")).toBe("qras_query_secret");
+    expect((init?.headers as Headers).get("x-api-key")).toBeNull();
     fetchMock.mockRestore();
+    if (previousApiKey === undefined) {
+      delete process.env.QRCODING_API_KEY;
+    } else {
+      process.env.QRCODING_API_KEY = previousApiKey;
+    }
   });
 
   it("uses QRCODING_API_KEY from the private proxy environment when no header or query key is provided", async () => {
