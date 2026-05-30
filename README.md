@@ -164,7 +164,7 @@ ChatGPT 설정 전에 private MCP proxy에 `qras_` 키 하나를 준비합니다
 
 Hosted gateway는 server card, skill discovery, OpenAPI, legacy/dev client 테스트용입니다. ChatGPT + Codex 운영 흐름에서는 private MCP proxy와 Secure MCP Tunnel을 우선 사용하세요.
 
-Legacy/dev client에서만 쿼리 인증이 필요하면 `/mcp?api_key=<YOUR_QR_AGENT_STUDIO_API_KEY>` 형식을 사용할 수 있지만, 이 URL 자체가 secret이므로 ChatGPT에는 붙이지 않습니다.
+API 키는 `x-api-key` 헤더 또는 private proxy의 `QRCODING_API_KEY` 환경변수로만 전달합니다. URL 쿼리(`?api_key=`/`?key=`)는 더 이상 인증으로 사용되지 않습니다 — 쿼리 문자열은 CDN·프록시·접속 로그에 남기 때문입니다(게이트웨이는 전달 전 해당 파라미터를 제거합니다).
 
 Streamable HTTP MCP 예:
 
