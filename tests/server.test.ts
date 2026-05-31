@@ -52,8 +52,10 @@ describe("qrcoding skill mcp gateway", () => {
     );
 
     const skill = await handleRequest(request("/.well-known/agent-skills/qrcoding-campaign-operator/SKILL.md"));
-    expect(String(skill.body)).toContain("x-api-key: <api-key>");
-    expect(String(skill.body)).toContain("POST https://skill.example/mcp");
+    // Content is the single-source SKILL.md with the canonical gateway URL baked in.
+    expect(String(skill.body)).toContain("x-api-key");
+    expect(String(skill.body)).toContain("https://qrcoding-skill-mcp.vercel.app/mcp");
+    expect(String(skill.body)).not.toContain("0ab50f91");
 
     const legacy = await handleRequest(request("/.well-known/agent-skills/qrcoding/SKILL.md"));
     expect(legacy.statusCode).toBe(200);

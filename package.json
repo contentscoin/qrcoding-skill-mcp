@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "tsc --noEmit",
+    "bundle:skills": "node scripts/bundle-skills.mjs",
     "install:skills": "node scripts/install.mjs",
     "mcp": "node mcp/qrcoding_mcp.mjs",
     "test": "vitest run",
