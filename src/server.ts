@@ -150,7 +150,7 @@ function mcpServerCard(request: RequestLike): RouteResponse {
 
 function agentSkillsIndex(request: RequestLike): RouteResponse {
   const publicBaseUrl = getPublicBaseUrl(request);
-  const artifacts = skillArtifacts(publicBaseUrl, getQrcodingBaseUrl());
+  const artifacts = skillArtifacts();
   return json(200, {
     $schema: "https://schemas.agentskills.io/discovery/0.2.0/schema.json",
     skills: artifacts.map((artifact) => ({
@@ -211,11 +211,11 @@ export async function handleRequest(request: RequestLike): Promise<RouteResponse
   if (path.startsWith("/.well-known/agent-skills/") && path.endsWith("/SKILL.md")) {
     const name = decodeURIComponent(path.split("/").at(-2) ?? "");
     const artifactName = name === "qrcoding" ? "qrcoding-campaign-operator" : name;
-    const artifacts = skillArtifacts(getPublicBaseUrl(request), getQrcodingBaseUrl());
+    const artifacts = skillArtifacts();
     if (!artifacts.some((artifact) => artifact.name === artifactName)) {
       return json(404, { code: "not_found", message: "Skill not found." });
     }
-    return text(200, skillMarkdown(getPublicBaseUrl(request), getQrcodingBaseUrl(), artifactName), "text/markdown; charset=utf-8");
+    return text(200, skillMarkdown(artifactName), "text/markdown; charset=utf-8");
   }
   if (path.startsWith("/v1/")) {
     return proxy(request, targetPathWithoutQueryAuth(path, parsed), apiKeyOverrideForRequest(request));

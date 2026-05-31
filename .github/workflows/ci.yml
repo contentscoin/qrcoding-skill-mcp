@@ -1,0 +1,26 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# Cancel superseded runs when newer commits land on the same ref.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+      - run: npm ci
+      - run: npm run build            # tsc --noEmit
+      # tsc does not cover the plain-JS MCP server / scripts — syntax-check them.
+      - run: for f in mcp/*.mjs scripts/*.mjs; do node --check "$f"; done
+      - run: npm test                 # vitest (incl. skills single-source drift guard)

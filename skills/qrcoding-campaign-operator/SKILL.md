@@ -15,7 +15,7 @@ allowed-tools: "Read, Grep, Bash(test *), Bash(curl *)"
 
 - Skill/MCP Gateway: `https://qrcoding-skill-mcp.vercel.app`
 - MCP Endpoint: `https://qrcoding-skill-mcp.vercel.app/mcp`
-- API Base URL: `https://qrcoding-contentscoin-jakes-projects-0ab50f91.vercel.app`
+- API Base URL: `https://qrcoding-skill-mcp.vercel.app`
 - 인증 헤더: `x-api-key`
 - API Key는 `QRCODING_API_KEY` 환경변수에서 읽는 것을 기본으로 한다.
 - 실제 API Key를 답변, 로그, QR payload, markdown, public URL, screenshot에 노출하지 않는다.
@@ -25,7 +25,7 @@ allowed-tools: "Read, Grep, Bash(test *), Bash(curl *)"
 
 ```bash
 GATEWAY_URL="${QRCODING_MCP_URL:-https://qrcoding-skill-mcp.vercel.app/mcp}"
-BASE_URL="${QRCODING_BASE_URL:-https://qrcoding-contentscoin-jakes-projects-0ab50f91.vercel.app}"
+BASE_URL="${QRCODING_BASE_URL:-https://qrcoding-skill-mcp.vercel.app}"
 test -n "$QRCODING_API_KEY"
 ```
 

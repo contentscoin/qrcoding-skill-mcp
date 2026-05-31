@@ -6,7 +6,7 @@ QR Agent Studio stores QR codes as reproducible JSON specs and regenerates SVG/P
 
 | Item | Value |
 |---|---|
-| Default API Base URL | `https://qrcoding-contentscoin-jakes-projects-0ab50f91.vercel.app` |
+| Default API Base URL | `https://qrcoding-skill-mcp.vercel.app` |
 | Skill/MCP Gateway | `https://qrcoding-skill-mcp.vercel.app` |
 | MCP Endpoint | `https://qrcoding-skill-mcp.vercel.app/mcp` |
 | Auth Header | `x-api-key` |

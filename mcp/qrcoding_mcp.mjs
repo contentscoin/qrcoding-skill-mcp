@@ -195,6 +195,46 @@ const FALLBACK_TOOLS = [
     description: "Return plan and active QR usage for the current organization.",
     inputSchema: objectSchema({}),
   },
+  {
+    name: "search",
+    description: "Search QR codes in the current organization by name or content.",
+    inputSchema: objectSchema({ query: { type: "string" } }, ["query"]),
+  },
+  {
+    name: "fetch",
+    description: "Fetch full details for a QR code returned by search.",
+    inputSchema: objectSchema({ id: { type: "string" } }, ["id"]),
+  },
+  {
+    name: "prepare_qr_for_image",
+    description: "Create (if needed) and render a QR code ready to place into a generated image.",
+    inputSchema: objectSchema({
+      name: { type: "string" },
+      payload: { type: "object" },
+      destinationUrl: { type: "string" },
+      createIfMissing: { type: "boolean" },
+    }, ["payload"]),
+  },
+  {
+    name: "get_qr_spec",
+    description: "Return the reproducible JSON spec for a QR code.",
+    inputSchema: objectSchema({ id: { type: "string" } }, ["id"]),
+  },
+  {
+    name: "compose_qr_overlay",
+    description: "Generate AI image overlay instructions for placing a QR code into artwork.",
+    inputSchema: objectSchema({ id: { type: "string" } }, ["id"]),
+  },
+  {
+    name: "validate_qr_scanability",
+    description: "Validate a QR code's scanability and return a score.",
+    inputSchema: objectSchema({ id: { type: "string" } }, ["id"]),
+  },
+  {
+    name: "get_qr_analytics",
+    description: "Return scan analytics for one QR code (id) or the whole organization.",
+    inputSchema: objectSchema({ id: { type: "string" } }),
+  },
 ];
 
 const PROMPTS = [
@@ -230,7 +270,7 @@ async function callTool(name, args = {}) {
 async function handle(method, params = {}) {
   if (method === "initialize") {
     return {
-      protocolVersion: params.protocolVersion || "2025-06-18",
+      protocolVersion: params.protocolVersion || "2025-11-25",
       capabilities: {
         tools: {},
         prompts: {},
