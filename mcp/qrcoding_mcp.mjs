@@ -181,11 +181,20 @@ const FALLBACK_TOOLS = [
   },
   {
     name: "create_qr_batch",
-    description: "Create many QR codes at once for a campaign. items[] are create_qr_code inputs; optional projectId tags the batch. Returns per-item results.",
+    description: "Create many QR codes at once for a campaign. items[] are create_qr_code inputs; optional projectId tags the batch and defaultDesign (e.g. a logo) applies to all. Returns per-item results.",
     inputSchema: objectSchema({
       projectId: { type: "string" },
+      defaultDesign: { type: "object" },
       items: { type: "array", items: { type: "object" } },
     }, ["items"]),
+  },
+  {
+    name: "upload_logo",
+    description: "Validate a logo image (png/jpeg/webp base64, not SVG) and return a logoDataUri to pass as design.logoDataUri. Logos render in SVG and force error correction to H.",
+    inputSchema: objectSchema({
+      data: { type: "string" },
+      mime: { type: "string", enum: ["image/png", "image/jpeg", "image/webp"] },
+    }, ["data"]),
   },
   {
     name: "render_qr_code",
