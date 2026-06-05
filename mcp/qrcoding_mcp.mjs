@@ -169,14 +169,23 @@ const FALLBACK_TOOLS = [
   },
   {
     name: "create_qr_code",
-    description: "Create a QR code spec. Dynamic QR codes require URL payloads; text payloads are static.",
+    description: "Create a QR code. Provide payload (url/text) OR content (structured: wifi, vcard, email, sms, tel, geo, calendar). Dynamic QR needs a URL; structured/text content is static.",
     inputSchema: objectSchema({
       name: { type: "string" },
       type: { type: "string", enum: ["static", "dynamic"] },
       payload: { type: "object" },
+      content: { type: "object" },
       destinationUrl: { type: "string" },
       design: { type: "object" },
-    }, ["payload"]),
+    }),
+  },
+  {
+    name: "create_qr_batch",
+    description: "Create many QR codes at once for a campaign. items[] are create_qr_code inputs; optional projectId tags the batch. Returns per-item results.",
+    inputSchema: objectSchema({
+      projectId: { type: "string" },
+      items: { type: "array", items: { type: "object" } },
+    }, ["items"]),
   },
   {
     name: "render_qr_code",
