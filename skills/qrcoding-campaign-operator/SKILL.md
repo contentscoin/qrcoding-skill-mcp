@@ -39,6 +39,7 @@ test -n "$QRCODING_API_KEY"
 
 | 작업 | MCP 도구 |
 |---|---|
+| 지원 기능/한도 확인 (먼저 확인) | `get_capabilities` |
 | QR 검색 | `search` |
 | 검색 결과 상세 조회 | `fetch` |
 | 이미지 삽입용 QR 준비 | `prepare_qr_for_image` |
@@ -46,10 +47,12 @@ test -n "$QRCODING_API_KEY"
 | QR 렌더링 | `render_qr_code` |
 | QR JSON 스펙 조회 | `get_qr_spec` |
 | 동적 QR 목적지 변경 | `update_qr_destination` |
+| QR 보관/비활성화 | `archive_qr_code` |
 | QR 목록 조회 | `list_qr_codes` |
 | AI 이미지 오버레이 지시문 생성 | `compose_qr_overlay` |
 | 스캔 가능성 검증 | `validate_qr_scanability` |
-| 분석 조회 | `get_qr_analytics` |
+| 분석 조회 (총 스캔) | `get_qr_analytics` |
+| 분석 상세 (추이/기기/국가/referrer) | `get_qr_analytics_detail` |
 | 계정/요금제 상태 조회 | `get_account_status` |
 
 ## 의도 매핑
@@ -58,15 +61,33 @@ test -n "$QRCODING_API_KEY"
 
 | 사용자 의도 | 우선 도구 | fallback API |
 |---|---|---|
+| 뭘 할 수 있어? / 이거 지원돼? | `get_capabilities` | (인증 불필요) |
 | QR 목록 보여줘, 캠페인 찾아줘 | `list_qr_codes`, `search` | `GET /v1/qr-codes` |
 | 특정 QR 상세 확인 | `get_qr_spec`, `fetch` | `GET /v1/qr-codes/{id}` |
 | 새 QR 만들어줘 | `create_qr_code` | `POST /v1/qr-codes` |
 | 이미지/포스터에 넣을 QR 준비 | `prepare_qr_for_image` | `POST /v1/qr-codes`, `POST /v1/qr-codes/{id}/render` |
 | SVG/PNG/PDF 다시 만들어줘 | `render_qr_code` | `POST /v1/qr-codes/{id}/render` |
 | 동적 QR 목적지 바꿔줘 | `update_qr_destination` | `PATCH /v1/qr-codes/{id}/destination` |
+| QR 보관/비활성화, 한도 확보 | `archive_qr_code` | `POST /v1/qr-codes/{id}/archive` |
 | 스캔 가능성 확인 | `validate_qr_scanability` | `POST /v1/qr-codes/{id}/validate` |
 | 스캔 수 확인 | `get_qr_analytics` | `GET /v1/analytics` |
+| 스캔 추이/기기/국가/referrer | `get_qr_analytics_detail` | `GET /v1/analytics/detail`, `GET /v1/qr-codes/{id}/analytics/detail` |
 | 현재 플랜/한도 확인 | `get_account_status` | `GET /v1/account` |
+
+## 지원 범위 먼저 확인
+
+기능 가능 여부가 불확실하면(WiFi/vCard QR, 로고 삽입, 지역별 분석 등) 추측하지 말고 먼저 `get_capabilities`를 호출해 지원 목록과 `notSupportedYet`를 확인한다. 지원하지 않는 기능은 사용자에게 명확히 알린다.
+
+## Error → 복구
+
+상태 변경 도구는 `{code, message, fixHint, nextTool}`를 반환할 수 있다. 원본 에러를 그대로 보여주지 말고 다음으로 복구한다.
+
+| code | 의미 | 복구 |
+|---|---|---|
+| `upgrade_required` | 무료 한도 초과 또는 유료 기능 | 한도면 `archive_qr_code`로 슬롯 확보 제안, 아니면 `pricingUrl` 안내 |
+| `not_found` | id 없음 | `list_qr_codes`/`search`로 id 재확인 |
+| dynamic 요구 실패 | static QR엔 목적지 변경 불가 | 동적 QR로 새로 만들거나 올바른 동적 QR id 사용 |
+| `forbidden_origin` / 인증 실패 | 키/세션 문제 | `get_account_status`로 인증 확인, 키 재설정 안내 |
 
 ## 실행 전 확인 규칙
 

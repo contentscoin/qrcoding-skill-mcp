@@ -197,6 +197,11 @@ const FALLBACK_TOOLS = [
     }, ["id", "destinationUrl"]),
   },
   {
+    name: "archive_qr_code",
+    description: "Deactivate/retire a QR code and free a free-plan slot. Future scans see an inactive page. Confirm first.",
+    inputSchema: objectSchema({ id: { type: "string" } }, ["id"]),
+  },
+  {
     name: "get_account_status",
     description: "Return plan and active QR usage for the current organization.",
     inputSchema: objectSchema({}),
@@ -240,6 +245,11 @@ const FALLBACK_TOOLS = [
     name: "get_qr_analytics",
     description: "Return scan analytics for one QR code (id) or the whole organization.",
     inputSchema: objectSchema({ id: { type: "string" } }),
+  },
+  {
+    name: "get_qr_analytics_detail",
+    description: "Return a scan breakdown (daily time-series, device, country, referrer) for one QR code (id) or the whole organization.",
+    inputSchema: objectSchema({ id: { type: "string" }, days: { type: "number" } }),
   },
 ];
 
