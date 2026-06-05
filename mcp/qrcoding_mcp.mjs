@@ -157,6 +157,12 @@ const DOC_TOOLS = [
 
 const FALLBACK_TOOLS = [
   {
+    name: "get_capabilities",
+    description:
+      "Use this FIRST when unsure what QR Agent Studio can do. Returns supported QR content types, formats, design options, analytics fields, plan limits, and what is NOT supported yet. No API key required.",
+    inputSchema: objectSchema({}),
+  },
+  {
     name: "list_qr_codes",
     description: "List QR codes in the current organization.",
     inputSchema: objectSchema({}),
@@ -264,7 +270,10 @@ async function listTools() {
 async function callTool(name, args = {}) {
   if (name === "qrcoding_list_reference_sections") return jsonText({ sections: listReferenceSections() });
   if (name === "qrcoding_get_reference_section") return textContent(referenceSection(args.title, args.file));
-  return remoteRpc("tools/call", { name, arguments: args }, { requireKey: true });
+  // get_capabilities is a public discovery tool — answer it without an API key so
+  // an agent can ask what the product can do before the user has connected.
+  const requireKey = name !== "get_capabilities";
+  return remoteRpc("tools/call", { name, arguments: args }, { requireKey });
 }
 
 async function handle(method, params = {}) {
