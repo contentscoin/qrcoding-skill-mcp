@@ -23,19 +23,19 @@ API key는 `qras_`로 시작합니다.
 ```bash
 curl -fsSL https://raw.githubusercontent.com/contentscoin/qrcoding-skill-mcp/main/install.sh -o /tmp/qrcoding-install.sh
 cat /tmp/qrcoding-install.sh
-bash /tmp/qrcoding-install.sh --project --mode=full --skip-key
+bash /tmp/qrcoding-install.sh --project --skip-key
 ```
 
-자주 쓰는 설치 예:
+기본 구성은 `ops`(운영)입니다. 자주 쓰는 설치 예:
 
 ```bash
-# 현재 프로젝트에 전체 스킬 설치
-bash /tmp/qrcoding-install.sh --project --mode=full --skip-key
+# 현재 프로젝트에 운영 구성(기본) 설치
+bash /tmp/qrcoding-install.sh --project --skip-key
 
-# Codex 전역에 운영용 스킬 설치
+# Codex 전역에 운영 구성 설치
 bash /tmp/qrcoding-install.sh --codex --mode=ops --skip-key
 
-# ChatGPT에서 Codex를 불러 쓰는 브리지까지 전체 설치
+# 연동 설계 + ChatGPT 브리지까지 전체 설치
 bash /tmp/qrcoding-install.sh --codex --mode=full --skip-key
 ```
 
@@ -43,9 +43,9 @@ bash /tmp/qrcoding-install.sh --codex --mode=full --skip-key
 
 | 구성 | 설치 내용 | 추천 상황 |
 |---|---|---|
-| 개발용 | `qrcoding-integration-architect` | API key, MCP, OpenAPI plugin, Agent Skill 연동 설계 |
-| 운영용 | `qrcoding-campaign-operator` | QR 생성, 조회, 렌더, 검증, 목적지 변경 |
-| 전체 | 두 스킬 모두 | 개발과 운영을 모두 사용할 때 |
+| 운영용 (`ops`, 기본) | 운영 코어 + 빠른시작·디자인·분석 라우터 + 연결 | 대부분의 사용자 |
+| 개발용 (`dev`) | 연동 설계 + ChatGPT 브리지 + 연결 | API/MCP/plugin 연동을 설계할 때 |
+| 전체 (`full`) | 위 전부 | 모든 스킬을 한 번에 |
 
 ## 설치 대상
 
@@ -61,9 +61,13 @@ bash /tmp/qrcoding-install.sh --codex --mode=full --skip-key
 
 | 스킬 | 용도 |
 |---|---|
-| `qrcoding-campaign-operator` | QR Agent Studio QR 생성, 조회, 렌더, 검증, 동적 목적지 변경을 API key와 MCP로 직접 처리합니다. |
-| `qrcoding-integration-architect` | QR Agent Studio API, MCP, Agent Skill, OpenAPI plugin 연동을 설계하고 구현 계획을 작성합니다. |
-| `qrcoding-chatgpt-codex-bridge` | ChatGPT에서 Secure MCP Tunnel을 연결하고 Codex에 QR Coding 작업을 넘기는 프롬프트와 설치 안내를 제공합니다. |
+| `qrcoding-campaign-operator` | 실행 코어. QR 생성·일괄/CSV·렌더·로고·라우팅·분석·목적지 변경을 API key와 MCP로 직접 처리합니다. |
+| `qrcoding-quickstart` | 첫 QR 생성 의도를 분류해 operator로 위임하는 얇은 라우터. |
+| `qrcoding-designer` | 로고·브랜드 색·디자인 요청을 분류해 operator로 위임하는 라우터. |
+| `qrcoding-analytics` | 스캔 수·추이·기기/국가 분석 요청을 분류해 operator로 위임하는 라우터. |
+| `qrcoding-connect` | Claude Code·Codex·ChatGPT 연결을 한 곳에서 안내합니다. |
+| `qrcoding-integration-architect` | API, MCP, Agent Skill, OpenAPI plugin 연동을 설계하고 구현 계획을 작성합니다(opt-in). |
+| `qrcoding-chatgpt-codex-bridge` | ChatGPT에서 Secure MCP Tunnel을 연결하고 Codex에 작업을 넘기는 고급 설정을 안내합니다. |
 
 ## ChatGPT + Codex Secure Tunnel 연결
 

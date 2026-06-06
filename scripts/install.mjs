@@ -15,26 +15,40 @@ const codexDestDir = process.env.CODEX_SKILLS_DIR || path.join(os.homedir(), ".a
 const projectSkillsDir = process.env.QRCODING_PROJECT_SKILLS_DIR || path.join(projectRoot, ".agents", "skills");
 
 const setupOptions = {
+  ops: {
+    label: "운영용 (기본)",
+    description: "운영 코어 + 빠른시작/디자인/분석 라우터 + 연결 스킬을 설치합니다.",
+    skills: [
+      "qrcoding-campaign-operator",
+      "qrcoding-quickstart",
+      "qrcoding-designer",
+      "qrcoding-analytics",
+      "qrcoding-connect",
+    ],
+  },
   dev: {
     label: "개발용",
-    description: "API, MCP, OpenAPI plugin, ChatGPT-Codex 브리지 설계 스킬을 설치합니다.",
-    skills: ["qrcoding-integration-architect", "qrcoding-chatgpt-codex-bridge"],
-  },
-  ops: {
-    label: "운영용",
-    description: "QR 생성, 렌더, 검증, 목적지 변경 운영 스킬을 설치합니다.",
-    skills: ["qrcoding-campaign-operator"],
+    description: "API/MCP/plugin 연동 설계와 ChatGPT-Codex 브리지, 연결 스킬을 설치합니다.",
+    skills: ["qrcoding-integration-architect", "qrcoding-chatgpt-codex-bridge", "qrcoding-connect"],
   },
   full: {
     label: "전체",
-    description: "개발용, 운영용, ChatGPT-Codex 브리지 스킬을 모두 설치합니다.",
-    skills: ["qrcoding-integration-architect", "qrcoding-campaign-operator", "qrcoding-chatgpt-codex-bridge"],
+    description: "운영, 라우터, 연결, 연동 설계, ChatGPT-Codex 브리지 스킬을 모두 설치합니다.",
+    skills: [
+      "qrcoding-campaign-operator",
+      "qrcoding-quickstart",
+      "qrcoding-designer",
+      "qrcoding-analytics",
+      "qrcoding-connect",
+      "qrcoding-integration-architect",
+      "qrcoding-chatgpt-codex-bridge",
+    ],
   },
 };
 
 const state = {
   target: "project",
-  mode: "full",
+  mode: "ops",
   dest: "",
   apiKey: process.env.QRCODING_API_KEY || "",
   skipKey: false,
