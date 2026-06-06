@@ -163,6 +163,28 @@ function agentSkillsIndex(request: RequestLike): RouteResponse {
   });
 }
 
+function llmsTxt(request: RequestLike): string {
+  const base = getPublicBaseUrl(request);
+  const skills = skillArtifacts()
+    .map((skill) => `- ${skill.name}: ${skill.description}`)
+    .join("\n");
+  return [
+    "# QR Agent Studio — Skills & MCP Gateway",
+    "",
+    "> Hosted MCP gateway and Agent Skills for QR Agent Studio: create and manage dynamic QR codes (URL, WiFi, vCard, email, SMS, phone, geo, calendar) with editable destinations, scan analytics, branded logos, smart routing, and bulk/CSV campaigns — from ChatGPT, Claude, Codex, or any MCP client.",
+    "",
+    "## Connect",
+    `- MCP endpoint: ${base}/mcp (Streamable HTTP JSON-RPC; auth via the x-api-key header)`,
+    `- MCP server card: ${base}/.well-known/mcp/server-card.json`,
+    `- Agent Skills index: ${base}/.well-known/agent-skills/index.json`,
+    `- OpenAPI: ${base}/openapi.json`,
+    "",
+    "## Skills",
+    skills,
+    ""
+  ].join("\n");
+}
+
 export async function handleRequest(request: RequestLike): Promise<RouteResponse> {
   const normalized = normalizeUrl(request);
   const parsed = new URL(normalized, "http://localhost");
@@ -185,6 +207,12 @@ export async function handleRequest(request: RequestLike): Promise<RouteResponse
   }
   if (path === "/health") {
     return json(200, { ok: true, service: "qrcoding-skill-mcp", upstream: getQrcodingBaseUrl() });
+  }
+  if (path === "/robots.txt") {
+    return text(200, ["User-agent: *", "Allow: /", "", "User-agent: GPTBot", "Allow: /", "User-agent: ClaudeBot", "Allow: /", "User-agent: PerplexityBot", "Allow: /", ""].join("\n"));
+  }
+  if (path === "/llms.txt") {
+    return text(200, llmsTxt(request), "text/markdown; charset=utf-8");
   }
   if (path === "/mcp") {
     const apiKey = apiKeyOverrideForRequest(request);
