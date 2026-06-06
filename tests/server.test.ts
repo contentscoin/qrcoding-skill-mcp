@@ -70,6 +70,18 @@ describe("qrcoding skill mcp gateway", () => {
     expect(String(bridge.body)).not.toContain("qras_your_key");
   });
 
+  it("serves robots.txt and llms.txt for crawlers and agents", async () => {
+    const robots = await handleRequest(request("/robots.txt"));
+    expect(robots.statusCode).toBe(200);
+    expect(String(robots.body)).toContain("GPTBot");
+
+    const llms = await handleRequest(request("/llms.txt"));
+    expect(llms.statusCode).toBe(200);
+    expect(llms.headers?.["content-type"]).toContain("text/markdown");
+    expect(String(llms.body)).toContain("MCP endpoint: https://skill.example/mcp");
+    expect(String(llms.body)).toContain("qrcoding-campaign-operator");
+  });
+
   it("proxies MCP requests with API key headers", async () => {
     const fetchMock = vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(
       new Response(JSON.stringify({ jsonrpc: "2.0", id: 1, result: { tools: [] } }), {
