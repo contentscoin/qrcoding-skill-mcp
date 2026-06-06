@@ -189,6 +189,14 @@ const FALLBACK_TOOLS = [
     }, ["items"]),
   },
   {
+    name: "import_qr_csv",
+    description: "Create QR codes from a CSV (header row + name/url/text/type columns). url -> dynamic (or static) URL QR; text -> static text QR. Returns per-row results with source line numbers.",
+    inputSchema: objectSchema({
+      csv: { type: "string" },
+      projectId: { type: "string" },
+    }, ["csv"]),
+  },
+  {
     name: "upload_logo",
     description: "Validate a logo image (png/jpeg/webp base64, not SVG) and return a logoDataUri to pass as design.logoDataUri. Logos render in SVG and force error correction to H.",
     inputSchema: objectSchema({
