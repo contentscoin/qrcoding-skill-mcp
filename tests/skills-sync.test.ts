@@ -13,6 +13,24 @@ describe("skills single source of truth", () => {
     }
   });
 
+  it("ships the focused catalog and the thin routers delegate to the execution core", () => {
+    const names = skillArtifacts().map((a) => a.name);
+    for (const expected of [
+      "qrcoding-campaign-operator",
+      "qrcoding-quickstart",
+      "qrcoding-designer",
+      "qrcoding-analytics",
+      "qrcoding-connect",
+      "qrcoding-integration-architect"
+    ]) {
+      expect(names, expected).toContain(expected);
+    }
+    for (const router of ["qrcoding-quickstart", "qrcoding-designer", "qrcoding-analytics"]) {
+      const artifact = skillArtifacts().find((a) => a.name === router)!;
+      expect(artifact.markdown, `${router} should delegate to campaign-operator`).toContain("qrcoding-campaign-operator");
+    }
+  });
+
   it("no skill hardcodes a non-gateway qrcoding upstream URL", () => {
     // The gateway (qrcoding-skill-mcp.vercel.app) proxies to the config-managed
     // upstream; skills must never bake in the upstream/preview host directly.

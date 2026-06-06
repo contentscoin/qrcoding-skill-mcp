@@ -43,10 +43,14 @@ test -n "$QRCODING_API_KEY"
 | QR 검색 | `search` |
 | 검색 결과 상세 조회 | `fetch` |
 | 이미지 삽입용 QR 준비 | `prepare_qr_for_image` |
-| QR 생성 | `create_qr_code` |
+| QR 생성 (URL/텍스트/WiFi/vCard/이메일/SMS/전화/위치/일정) | `create_qr_code` |
+| 일괄 생성 (캠페인) | `create_qr_batch` |
+| CSV 가져오기 | `import_qr_csv` |
+| 로고 검증/준비 | `upload_logo` |
 | QR 렌더링 | `render_qr_code` |
 | QR JSON 스펙 조회 | `get_qr_spec` |
 | 동적 QR 목적지 변경 | `update_qr_destination` |
+| 스마트 라우팅 (기기/지역/언어/스케줄/AB/만료/비밀번호) | `set_qr_routing` |
 | QR 보관/비활성화 | `archive_qr_code` |
 | QR 목록 조회 | `list_qr_codes` |
 | AI 이미지 오버레이 지시문 생성 | `compose_qr_overlay` |
@@ -64,10 +68,14 @@ test -n "$QRCODING_API_KEY"
 | 뭘 할 수 있어? / 이거 지원돼? | `get_capabilities` | (인증 불필요) |
 | QR 목록 보여줘, 캠페인 찾아줘 | `list_qr_codes`, `search` | `GET /v1/qr-codes` |
 | 특정 QR 상세 확인 | `get_qr_spec`, `fetch` | `GET /v1/qr-codes/{id}` |
-| 새 QR 만들어줘 | `create_qr_code` | `POST /v1/qr-codes` |
+| 새 QR 만들어줘 (URL/WiFi/vCard 등) | `create_qr_code` | `POST /v1/qr-codes` |
+| 여러 개 한 번에 / 캠페인 | `create_qr_batch` | `POST /v1/qr-codes/batch` |
+| CSV/스프레드시트로 만들어줘 | `import_qr_csv` | `POST /v1/qr-codes/import` |
+| 로고 넣어줘 | `upload_logo` → `create_qr_code`(design.logoDataUri) | `POST /v1/logos` 없음, design에 전달 |
 | 이미지/포스터에 넣을 QR 준비 | `prepare_qr_for_image` | `POST /v1/qr-codes`, `POST /v1/qr-codes/{id}/render` |
 | SVG/PNG/PDF 다시 만들어줘 | `render_qr_code` | `POST /v1/qr-codes/{id}/render` |
 | 동적 QR 목적지 바꿔줘 | `update_qr_destination` | `PATCH /v1/qr-codes/{id}/destination` |
+| 기기/지역/스케줄/AB/비밀번호로 분기 | `set_qr_routing` | `PATCH /v1/qr-codes/{id}/routing` |
 | QR 보관/비활성화, 한도 확보 | `archive_qr_code` | `POST /v1/qr-codes/{id}/archive` |
 | 스캔 가능성 확인 | `validate_qr_scanability` | `POST /v1/qr-codes/{id}/validate` |
 | 스캔 수 확인 | `get_qr_analytics` | `GET /v1/analytics` |
