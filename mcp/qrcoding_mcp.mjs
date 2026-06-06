@@ -215,6 +215,14 @@ const FALLBACK_TOOLS = [
     }, ["id", "destinationUrl"]),
   },
   {
+    name: "set_qr_routing",
+    description: "Smart routing for a dynamic QR: send people to different URLs by device/country/language/schedule, A/B split, or expire after a date. Pass routing (rules[], abVariants[], expiresAt) or null to clear. Affects all scanners — confirm first.",
+    inputSchema: objectSchema({
+      id: { type: "string" },
+      routing: { type: "object" },
+    }, ["id"]),
+  },
+  {
     name: "archive_qr_code",
     description: "Deactivate/retire a QR code and free a free-plan slot. Future scans see an inactive page. Confirm first.",
     inputSchema: objectSchema({ id: { type: "string" } }, ["id"]),
