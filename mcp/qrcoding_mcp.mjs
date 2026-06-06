@@ -216,7 +216,7 @@ const FALLBACK_TOOLS = [
   },
   {
     name: "set_qr_routing",
-    description: "Smart routing for a dynamic QR: send people to different URLs by device/country/language/schedule, A/B split, or expire after a date. Pass routing (rules[], abVariants[], expiresAt) or null to clear. Affects all scanners — confirm first.",
+    description: "Smart routing for a dynamic QR: send people to different URLs by device/country/language/schedule, A/B split, expire after a date, or gate behind a password. Pass routing (rules[], abVariants[], expiresAt, password) or null to clear. Affects all scanners — confirm first.",
     inputSchema: objectSchema({
       id: { type: "string" },
       routing: { type: "object" },
