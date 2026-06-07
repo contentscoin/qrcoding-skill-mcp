@@ -135,12 +135,7 @@ function mcpServerCard(request: RequestLike): RouteResponse {
     authentication: {
       type: "apiKey",
       header: "x-api-key",
-      note: "For Secure MCP Tunnel, set QRCODING_API_KEY on the private MCP proxy so ChatGPT only connects by tunnel_id."
-    },
-    secureTunnel: {
-      recommendedFor: "ChatGPT + Codex",
-      environmentVariable: "QRCODING_API_KEY",
-      note: "Do not paste qras_ keys or ?api_key= URLs into ChatGPT when using Secure MCP Tunnel."
+      note: "Claude Code / Codex: send the qras_ key as the x-api-key header (or QRCODING_API_KEY env). ChatGPT: add a custom connector with the dashboard's connector URL (the key is in the URL path) and select No authentication."
     },
     upstream: {
       url: getQrcodingBaseUrl()
@@ -197,11 +192,6 @@ export async function handleRequest(request: RequestLike): Promise<RouteResponse
       mcpServerCard: "/.well-known/mcp/server-card.json",
       agentSkills: "/.well-known/agent-skills/index.json",
       openapi: "/openapi.json",
-      secureTunnel: {
-        recommendedFor: "ChatGPT + Codex",
-        environmentVariable: "QRCODING_API_KEY",
-        note: "Run this gateway as a private MCP proxy behind OpenAI Secure MCP Tunnel."
-      },
       upstream: getQrcodingBaseUrl()
     });
   }
@@ -226,7 +216,7 @@ export async function handleRequest(request: RequestLike): Promise<RouteResponse
           header: "x-api-key",
           environmentVariable: "QRCODING_API_KEY",
           note:
-            "Recommended for ChatGPT + Codex: use OpenAI Secure MCP Tunnel and keep QRCODING_API_KEY on this private proxy. Send the key via the x-api-key header or the env var — never in the URL (query strings leak into logs)."
+            "Claude Code / Codex: send the qras_ key via the x-api-key header or QRCODING_API_KEY env. ChatGPT: add a custom connector with the dashboard's connector URL (key in the URL path) and select No authentication."
         },
         upstream: getQrcodingBaseUrl()
       });

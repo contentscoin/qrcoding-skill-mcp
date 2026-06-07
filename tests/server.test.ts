@@ -44,9 +44,9 @@ describe("qrcoding skill mcp gateway", () => {
           url: "https://skill.example/.well-known/agent-skills/qrcoding-integration-architect/SKILL.md"
         }),
         expect.objectContaining({
-          name: "qrcoding-chatgpt-codex-bridge",
+          name: "qrcoding-connect",
           type: "skill-md",
-          url: "https://skill.example/.well-known/agent-skills/qrcoding-chatgpt-codex-bridge/SKILL.md"
+          url: "https://skill.example/.well-known/agent-skills/qrcoding-connect/SKILL.md"
         })
       ])
     );
@@ -61,13 +61,17 @@ describe("qrcoding skill mcp gateway", () => {
     expect(legacy.statusCode).toBe(200);
     expect(String(legacy.body)).toContain("qrcoding-campaign-operator");
 
+    // ChatGPT connect guidance now lives in qrcoding-connect (the bridge is retired).
+    const connect = await handleRequest(request("/.well-known/agent-skills/qrcoding-connect/SKILL.md"));
+    expect(connect.statusCode).toBe(200);
+    expect(String(connect.body)).toContain("custom connector");
+    expect(String(connect.body)).toContain("No authentication");
+    expect(String(connect.body)).not.toContain("Secure MCP Tunnel");
+    expect(String(connect.body)).not.toContain("tunnel_id");
+
+    // The retired ChatGPT-Codex bridge skill is no longer served.
     const bridge = await handleRequest(request("/.well-known/agent-skills/qrcoding-chatgpt-codex-bridge/SKILL.md"));
-    expect(String(bridge.body)).toContain("ChatGPT -> Codex Handoff Prompt");
-    expect(String(bridge.body)).toContain("Secure MCP Tunnel");
-    expect(String(bridge.body)).toContain("QRCODING_API_KEY");
-    expect(String(bridge.body)).toContain("<YOUR_QR_AGENT_STUDIO_API_KEY>");
-    expect(String(bridge.body)).toContain("https://chatgpt.com/#settings/Connectors");
-    expect(String(bridge.body)).not.toContain("qras_your_key");
+    expect(bridge.statusCode).toBe(404);
   });
 
   it("serves robots.txt and llms.txt for crawlers and agents", async () => {
