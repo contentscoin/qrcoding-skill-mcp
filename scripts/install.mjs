@@ -28,12 +28,12 @@ const setupOptions = {
   },
   dev: {
     label: "개발용",
-    description: "API/MCP/plugin 연동 설계와 ChatGPT-Codex 브리지, 연결 스킬을 설치합니다.",
-    skills: ["qrcoding-integration-architect", "qrcoding-chatgpt-codex-bridge", "qrcoding-connect"],
+    description: "API/MCP/plugin 연동 설계와 연결 스킬을 설치합니다.",
+    skills: ["qrcoding-integration-architect", "qrcoding-connect"],
   },
   full: {
     label: "전체",
-    description: "운영, 라우터, 연결, 연동 설계, ChatGPT-Codex 브리지 스킬을 모두 설치합니다.",
+    description: "운영, 라우터, 연결, 연동 설계 스킬을 모두 설치합니다.",
     skills: [
       "qrcoding-campaign-operator",
       "qrcoding-quickstart",
@@ -41,7 +41,6 @@ const setupOptions = {
       "qrcoding-analytics",
       "qrcoding-connect",
       "qrcoding-integration-architect",
-      "qrcoding-chatgpt-codex-bridge",
     ],
   },
 };

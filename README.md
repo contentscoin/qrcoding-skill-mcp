@@ -67,16 +67,16 @@ bash /tmp/qrcoding-install.sh --codex --mode=full --skip-key
 | `qrcoding-analytics` | 스캔 수·추이·기기/국가 분석 요청을 분류해 operator로 위임하는 라우터. |
 | `qrcoding-connect` | Claude Code·Codex·ChatGPT 연결을 한 곳에서 안내합니다. |
 | `qrcoding-integration-architect` | API, MCP, Agent Skill, OpenAPI plugin 연동을 설계하고 구현 계획을 작성합니다(opt-in). |
-| `qrcoding-chatgpt-codex-bridge` | ChatGPT에서 Secure MCP Tunnel을 연결하고 Codex에 작업을 넘기는 고급 설정을 안내합니다. |
 
-## ChatGPT + Codex Secure Tunnel 연결
+## ChatGPT 연결
 
-추천 흐름은 공개 MCP URL에 `?api_key=`를 붙이는 방식이 아니라, private MCP proxy가 QR Agent Studio API key를 가지고 OpenAI Secure MCP Tunnel로 ChatGPT + Codex에 연결하는 방식입니다.
+ChatGPT는 헤더 인증을 지원하지 않으므로 API key를 커스텀 커넥터 URL 경로에 넣어 연결합니다(유료 플랜·데스크톱 웹, OAuth·터널 불필요).
 
-1. **Private MCP proxy 준비**: proxy 서버 또는 Codex 환경에 `QRCODING_API_KEY`를 설정합니다.
-2. **Tunnel client 실행**: OpenAI Platform에서 만든 `tunnel_id`와 runtime API key로 `tunnel-client`를 실행합니다.
-3. **ChatGPT connector 연결**: ChatGPT connector에서 Connection을 `Tunnel`로 선택하고 `tunnel_id`를 고르거나 붙여넣습니다.
-4. **ChatGPT -> Codex 스킬화**: `qrcoding-chatgpt-codex-bridge`의 handoff prompt로 Codex에게 QR Coding 스킬과 터널 도구를 사용하도록 지시합니다.
+1. **키 발급 + URL 복사**: QR Agent Studio 대시보드 Connect 패널에서 키를 발급하고 ChatGPT용 커넥터 URL 전체를 복사합니다(키가 `…/mcp/<키>` 경로에 포함됨).
+2. **커스텀 커넥터 추가**: ChatGPT → 설정 → Connectors → Developer mode → Add custom connector에 그 URL을 붙여넣고 Authentication은 `No authentication`을 선택합니다.
+3. **사용**: 연결되면 새 대화에서 QR 생성·검증·수정을 자연어로 요청합니다.
+
+커넥터 URL은 키를 담고 있으니 비밀번호처럼 다루고, 유출되면 대시보드에서 해당 키를 폐기합니다. 자세한 클라이언트별 안내는 `qrcoding-connect` 스킬을 참고하세요.
 
 ## API key 바꾸기
 
@@ -111,36 +111,7 @@ bash /tmp/qrcoding-install-mcp.sh
 
 MCP 서버도 `QRCODING_API_KEY` 환경변수를 사용합니다.
 
-Secure MCP Tunnel로 ChatGPT + Codex에 연결할 때는 private MCP proxy에서 아래처럼 준비합니다.
-
-```bash
-export QRCODING_API_KEY="<YOUR_QR_AGENT_STUDIO_API_KEY>"
-export CONTROL_PLANE_API_KEY="<OPENAI_RUNTIME_API_KEY_WITH_TUNNELS_READ_USE>"
-tunnel_id="<YOUR_TUNNEL_ID>"
-
-tunnel-client init \
-  --profile qr-agent-proxy \
-  --tunnel-id "$tunnel_id" \
-  --mcp-server-url http://localhost:3000/mcp
-
-tunnel-client doctor --profile qr-agent-proxy --explain
-tunnel-client run --profile qr-agent-proxy
-```
-
-`CONTROL_PLANE_API_KEY`는 대상 tunnel에 대해 Tunnels Read + Use 권한이 필요합니다. tunnel을 만들거나 수정하는 운영자에게만 Tunnels Read + Manage 권한을 부여하세요.
-
-ChatGPT에는 `qras_` 키나 `?api_key=` URL을 넣지 않습니다. ChatGPT connector에서는 `Tunnel`을 선택하고 `tunnel_id`만 연결합니다. Codex/API 흐름에서는 해당 OpenAI product surface에서 제공하는 tunnel-backed MCP target을 사용합니다.
-
-ChatGPT 앱 세팅 흐름:
-
-ChatGPT 설정 전에 private MCP proxy에 `qras_` 키 하나를 준비합니다. 이 키는 ChatGPT에 붙여넣지 않습니다.
-
-1. 개발자 모드 켜기: `https://chatgpt.com/`을 열고 올바른 workspace인지 확인한 뒤, ChatGPT 설정에서 Developer mode 또는 custom MCP connector 생성을 켭니다. workspace에서 custom MCP 앱을 만들 수 있으면 완료입니다.
-2. 앱 생성하기: 개발자 모드를 켠 뒤 ChatGPT의 Apps 또는 Workspace Apps에서 QR Agent Studio 앱을 생성합니다. 앱 이름과 설명을 입력할 수 있으면 완료입니다.
-3. API와 터널 설정하기: 앱 생성 화면 또는 `https://chatgpt.com/#settings/Connectors`의 connector 설정에서 `Connection: Tunnel`을 선택하고 `tunnel_id`를 선택하거나 입력한 뒤 `Scan Tools`로 QR 도구를 저장합니다. `QRCODING_API_KEY`와 `tunnel-client`는 private proxy 쪽에만 둡니다.
-4. 생성된 앱 사용하기: 새 ChatGPT 대화에서 앱/도구 선택 메뉴로 QR Agent Studio 개발 앱을 고르고 QR 생성 또는 검증을 요청합니다. 생성 결과나 검증 요약이 돌아오면 완료입니다.
-
-메뉴가 보이지 않으면 요금제, workspace 관리자/소유자 권한, RBAC 개발자 권한, ChatGPT 웹 접속 여부를 확인하세요. MCP 앱은 모바일에서 사용할 수 없습니다.
+Claude Code·Codex는 `x-api-key` 헤더 또는 `QRCODING_API_KEY` 환경변수로 게이트웨이 MCP에 연결합니다. ChatGPT는 위 "ChatGPT 연결" 섹션처럼 커스텀 커넥터 URL(키가 경로에 포함)을 `No authentication`으로 연결합니다 — 별도 터널이나 proxy는 필요 없습니다. 메뉴가 보이지 않으면 요금제, workspace 관리자/소유자 권한, ChatGPT 데스크톱 웹 접속 여부를 확인하세요(모바일 미지원).
 
 대표 도구는 다음과 같습니다.
 
@@ -166,7 +137,7 @@ ChatGPT 설정 전에 private MCP proxy에 `qras_` 키 하나를 준비합니다
 | Agent Skills Index | `https://qrcoding-skill-mcp.vercel.app/.well-known/agent-skills/index.json` |
 | OpenAPI | `https://qrcoding-skill-mcp.vercel.app/openapi.json` |
 
-Hosted gateway는 server card, skill discovery, OpenAPI, legacy/dev client 테스트용입니다. ChatGPT + Codex 운영 흐름에서는 private MCP proxy와 Secure MCP Tunnel을 우선 사용하세요.
+Hosted gateway는 server card, skill discovery, OpenAPI, Claude Code/Codex 등 헤더 인증 MCP client용입니다. ChatGPT는 대시보드 Connect 패널의 커스텀 커넥터 URL로 연결합니다.
 
 API 키는 `x-api-key` 헤더 또는 private proxy의 `QRCODING_API_KEY` 환경변수로만 전달합니다. URL 쿼리(`?api_key=`/`?key=`)는 더 이상 인증으로 사용되지 않습니다 — 쿼리 문자열은 CDN·프록시·접속 로그에 남기 때문입니다(게이트웨이는 전달 전 해당 파라미터를 제거합니다).
 
