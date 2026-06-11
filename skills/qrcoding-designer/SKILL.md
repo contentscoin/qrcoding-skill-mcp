@@ -11,7 +11,7 @@ allowed-tools: "Read"
 
 ## 분류 순서
 
-1. **로고**: 이미지를 `upload_logo`로 검증해 `logoDataUri`를 받고 `design.logoDataUri`로 전달한다. PNG/JPG/WebP만 허용(SVG 불가), 100KB 이하. 로고가 있으면 SVG 렌더에 중앙 삽입되고 오류정정이 자동으로 H로 올라간다. PNG/PDF 내보내기에는 로고가 들어가지 않는다.
+1. **로고**: 이미지를 `upload_logo`로 검증해 `logoDataUri`를 받고 `design.logoDataUri`로 전달한다. PNG/JPG/WebP만 허용(SVG 소스 불가), 100KB 이하. 로고가 있으면 중앙에 삽입되고 오류정정이 자동으로 H로 올라간다. 로고는 SVG·PNG·PDF 내보내기에 모두 포함된다(PNG/PDF는 로고 포함 SVG를 래스터화).
 2. **색·모양**: foreground/background, eyeShape, moduleShape, quietZone, errorCorrection. 커스텀 디자인은 Pro 플랜이며, 무료 플랜은 기본 템플릿(classic/studio/mono)만 사용한다.
 3. **캠페인 전체 브랜딩**: 같은 로고/색을 여러 QR에 적용하려면 `create_qr_batch`의 `defaultDesign`으로 한 번에 지정한다.
 
